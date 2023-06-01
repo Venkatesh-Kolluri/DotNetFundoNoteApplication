@@ -1,0 +1,91 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "CommanLayer/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/CommanLayer.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CommanLayer.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CommanLayer/1.0.0": {
+      "type": "project",
+      "path": "../CommanLayer/CommanLayer.csproj",
+      "msbuildProject": "../CommanLayer/CommanLayer.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETCoreApp,Version=v3.1": [
+      "CommanLayer >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Venky\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "E:\\BridgelabzProject\\FundoNoteApplication\\DataLayer\\DataLayer.csproj",
+      "projectName": "DataLayer",
+      "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\DataLayer\\DataLayer.csproj",
+      "packagesPath": "C:\\Users\\Venky\\.nuget\\packages\\",
+      "outputPath": "E:\\BridgelabzProject\\FundoNoteApplication\\DataLayer\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Venky\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netcoreapp3.1"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "projectReferences": {
+            "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj": {
+              "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
