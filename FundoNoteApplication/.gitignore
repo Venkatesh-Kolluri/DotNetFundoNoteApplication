@@ -1,0 +1,9 @@
+CommonLayer/bin/
+CommonLayer/obj/
+BusinessLayer/bin/
+BusinessLayer/obj/
+DataLayer/bin/
+DataLayer/obj/
+FundoNoteApplication/bin/
+FundoNoteApplication/obj/
+/.vs/

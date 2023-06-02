@@ -63,14 +63,14 @@
         }
       }
     },
-    "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj": {
+    "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\CommonLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj",
-        "projectName": "CommanLayer",
-        "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj",
+        "projectUniqueName": "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\CommonLayer.csproj",
+        "projectName": "CommonLayer",
+        "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\CommonLayer.csproj",
         "packagesPath": "C:\\Users\\Venky\\.nuget\\packages\\",
-        "outputPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\obj\\",
+        "outputPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Venky\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -142,8 +142,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj": {
-                "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommanLayer\\CommanLayer.csproj"
+              "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\CommonLayer.csproj": {
+                "projectPath": "E:\\BridgelabzProject\\FundoNoteApplication\\CommonLayer\\CommonLayer.csproj"
               }
             }
           }
@@ -157,6 +157,28 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

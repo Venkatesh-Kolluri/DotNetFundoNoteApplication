@@ -24,3 +24,6 @@ namespace FundoNoteApplication
                 });
     }
 }
+//generic host:is recommended and prefered for all application
+//web host: is used for backward compatibility
+
