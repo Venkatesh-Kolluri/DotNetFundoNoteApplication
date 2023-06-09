@@ -18,9 +18,6 @@ namespace BussinesLayer.Services
         {
             this.userDL = userDL;
         }
-
-        
-
         public UserEntity Register(UserRegistration user)
         {
             try
@@ -33,7 +30,7 @@ namespace BussinesLayer.Services
                 throw;
             }
         }
-        public UserEntity Login(UserLogin userLogin)
+        public string Login(UserLogin userLogin)
         {
             try
             {
@@ -46,5 +43,18 @@ namespace BussinesLayer.Services
             }
 
         }
+        public string ForgetPass(string Email)
+        {
+            try
+            {
+                return userDL.ForgetPass(Email);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }

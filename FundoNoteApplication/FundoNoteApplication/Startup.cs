@@ -18,6 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FundoNoteApplication.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace FundoNoteApplication
 {
@@ -30,13 +35,15 @@ namespace FundoNoteApplication
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the container.      
         public void ConfigureServices(IServiceCollection services)
         {
+         
             services.AddDbContext<FundoContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:FundoDb"]));
             services.AddControllers();
+          
             services.AddTransient<IUserBL,UserBL>();
-            services.AddTransient<IUserDL, UserDL>();
+            services.AddTransient<IUserDL, UserDL>();          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,14 +54,10 @@ namespace FundoNoteApplication
                 app.UseDeveloperExceptionPage();
             }
 
-            
-
-
-            app.UseHttpsRedirection(); //which is the primary element utilized for securing th  e application.
-                                       //middleware for redirecting HTTP Requests to HTTPS.
+            app.UseHttpsRedirection(); 
 
             app.UseRouting();
-
+            app.UseAuthentication();          
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
