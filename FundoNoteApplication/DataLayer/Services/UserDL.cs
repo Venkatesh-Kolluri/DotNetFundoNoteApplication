@@ -93,11 +93,31 @@ namespace DataLayer.Services
                     msmqModel.sendData2Queue(Token);
                     return Token;
                 }
-                return default;
+                else
+                    return null;
 
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public bool EmailCheck(string email)
+        {
+            try
+            {
+                UserEntity userentity = new UserEntity();
+                userentity = context.UserTable.FirstOrDefault(x => x.Email == email);
+                if (userentity != null)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

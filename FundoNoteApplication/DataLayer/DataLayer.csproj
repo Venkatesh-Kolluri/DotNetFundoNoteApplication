@@ -5,10 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
+    <Compile Remove="Migrations\20230612105600_NotesMigration.cs" />
+    <Compile Remove="Migrations\20230612105600_NotesMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230612110420_NoteMigration.cs" />
+    <Compile Remove="Migrations\20230612110420_NoteMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230612115933_NotesInfoMigration.cs" />
+    <Compile Remove="Migrations\20230612115933_NotesInfoMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230613042125_NotesMigration.cs" />
+    <Compile Remove="Migrations\20230613042125_NotesMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>

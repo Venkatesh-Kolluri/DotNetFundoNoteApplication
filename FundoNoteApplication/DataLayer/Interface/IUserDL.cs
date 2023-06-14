@@ -11,7 +11,8 @@ namespace DataLayer.Interface
         public UserEntity Register(UserRegistration user);
         public string Login(UserLogin userLogin);
         public string ForgetPass(string Email);
-      //  public string GenerateSecurityToken(string email, long userId);
+        public bool EmailCheck(string email);
+        //  public string GenerateSecurityToken(string email, long userId);
 
     }
 }

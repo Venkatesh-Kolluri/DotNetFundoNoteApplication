@@ -43,11 +43,23 @@ namespace BussinesLayer.Services
             }
 
         }
-        public string ForgetPass(string Email)
+        public string ForgetPassword(string Email)
         {
             try
             {
                 return userDL.ForgetPass(Email);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool EmailCheck(string email)
+        {
+            try
+            {
+                return userDL.EmailCheck(email);
             }
             catch (Exception)
             {

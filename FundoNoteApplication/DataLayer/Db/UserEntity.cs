@@ -8,6 +8,8 @@ namespace DataLayer.Db
 {
     public class UserEntity
     {
+        public readonly long userId;
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }

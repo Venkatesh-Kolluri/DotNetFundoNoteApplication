@@ -10,11 +10,14 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace FundoNoteApplication.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
@@ -23,9 +26,10 @@ namespace FundoNoteApplication.Controllers
         {
             this.userBL = userBL;
         }
+        [AllowAnonymous]
         [HttpPost]
-        [Route("register")]
-        public IActionResult register(UserRegistration userRegistration)
+        [Route(nameof(Register))]
+        public IActionResult Register(UserRegistration userRegistration)
         {
 
             try
@@ -46,8 +50,8 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
-
-        [HttpPost("login")]
+        [AllowAnonymous]
+        [HttpPost(nameof(Login))]
         public IActionResult Login(UserLogin userlogin)
         {
             try
@@ -66,17 +70,26 @@ namespace FundoNoteApplication.Controllers
 
             }
         }
+        [AllowAnonymous]
         [HttpPost("forgetpassword")]
-        public IActionResult ForgetPassword(UserLogin userLogin)
+        public IActionResult ForgetPassword(string userEmail)
         {
             try
             {
-                var result = userBL.ForgetPass(userLogin.Email);
-                if(result != null)
-                {
-                    return Ok(new { success = true, msg = "Token sent" });
-                }
-                return Ok(new { success = false, msg = "Token not sent" });
+                 var check = userBL.EmailCheck(userEmail);
+                 if (check != true)
+                 {
+                     return this.BadRequest(new { sucess = false, msg = "Email is not exist.Please change your email" });
+                 }
+                 var resultForgetPassword = userBL.ForgetPassword(userEmail);
+                 if (resultForgetPassword != null)
+                 {
+                     return this.Ok(new { sucess = true, msg = "Genrate Password Sucessfull", data = resultForgetPassword }); //SSMD form
+                 }
+                 else
+                 {
+                     return this.BadRequest(new { sucess = false, msg = "Genrate Password Unsucessfull" });
+                 }
 
             }
             catch (System.Exception)
@@ -85,6 +98,11 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
 
+        }
+
+        private Exception Exception()
+        {
+            throw new NotImplementedException();
         }
     }
 }

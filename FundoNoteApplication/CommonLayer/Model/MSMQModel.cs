@@ -13,7 +13,7 @@ namespace CommonLayer.Model
         MessageQueue msgQueue = new MessageQueue();
         public void sendData2Queue(string Token)
         {
-            msgQueue.Path = @".\private$\password";
+            msgQueue.Path = @".\private$\Token";
             if(MessageQueue.Exists(msgQueue.Path))
             {
                 //Exists
@@ -29,7 +29,7 @@ namespace CommonLayer.Model
             msgQueue.Close();
 
         }
-        private void MsgQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
+        public void MsgQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
             try
             {
@@ -43,8 +43,8 @@ namespace CommonLayer.Model
                     Credentials = new NetworkCredential("kollurivenkatesh97@gmail.com","usdhjficreugqlos"),
                     EnableSsl = true
                 };
-               // smtp.Send("kollurivenkatesh97@gmail.com", body, subject, data);
-                //  msgQueue.BeginReceive();
+                smtp.Send("kollurivenkatesh97@gmail.com", body, subject, data);
+                 msgQueue.BeginReceive();
             }
             catch (MessageQueueException qexception)
             {
