@@ -121,5 +121,27 @@ namespace DataLayer.Services
                 throw;
             }
         }
+        public string ResetPassword(string newPassword,string confirmPassword, string email)
+        {
+            try
+            {
+                
+                UserEntity userEntity = new UserEntity();
+              
+                userEntity = context.UserTable.FirstOrDefault(x => x.Email == email);
+                if (userEntity != null)
+                {
+                    userEntity.Password = newPassword;
+                    context.SaveChanges();
+                    return "Done";
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

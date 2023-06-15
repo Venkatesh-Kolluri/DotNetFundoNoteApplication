@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CommonLayer.Model
@@ -16,7 +17,7 @@ namespace CommonLayer.Model
             msgQueue.Path = @".\private$\Token";
             if(MessageQueue.Exists(msgQueue.Path))
             {
-                //Exists
+              //  MessageQueue.Create(msgQueue.Path); //Exists
             }
             else
             {
@@ -24,7 +25,7 @@ namespace CommonLayer.Model
             }
             msgQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
             msgQueue.ReceiveCompleted += MsgQueue_ReceiveCompleted;
-            msgQueue.Send("Desired Messages");
+            msgQueue.Send(Token);
             msgQueue.BeginReceive();
             msgQueue.Close();
 
@@ -35,18 +36,18 @@ namespace CommonLayer.Model
             {
                 var msg = msgQueue.EndReceive(e.AsyncResult);
                 string data = msg.Body.ToString();
-                string subject = "Fundonote reset link";
-                string body = data;
+                string subject = data ;
+                string body = "Fundonote reset link";
                 var smtp = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
                     Credentials = new NetworkCredential("kollurivenkatesh97@gmail.com","usdhjficreugqlos"),
                     EnableSsl = true
                 };
-                smtp.Send("kollurivenkatesh97@gmail.com", body, subject, data);
+                smtp.Send("kollurivenkatesh97@gmail.com","kollurivenkatesh97@gmail.com", body, subject);
                  msgQueue.BeginReceive();
             }
-            catch (MessageQueueException qexception)
+            catch (Exception)
             {
                 throw;
             }

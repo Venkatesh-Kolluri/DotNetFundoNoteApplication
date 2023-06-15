@@ -110,5 +110,44 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public bool Pinned(long noteId)
+        {
+            try
+            {
+                return notesDL.Pinned(noteId);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public bool Archieved(long noteId)
+        {
+            try
+            {
+                return notesDL.Archieved(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool Trashed(long noteId)
+        {
+            try
+            {
+                return notesDL.Trashed(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

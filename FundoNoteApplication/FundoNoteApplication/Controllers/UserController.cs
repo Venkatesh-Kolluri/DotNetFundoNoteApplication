@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Linq;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -71,7 +72,8 @@ namespace FundoNoteApplication.Controllers
             }
         }
         [AllowAnonymous]
-        [HttpPost("forgetpassword")]
+        [HttpPost]
+        [Route("forgetpassword")]
         public IActionResult ForgetPassword(string userEmail)
         {
             try
@@ -84,7 +86,7 @@ namespace FundoNoteApplication.Controllers
                  var resultForgetPassword = userBL.ForgetPassword(userEmail);
                  if (resultForgetPassword != null)
                  {
-                     return this.Ok(new { sucess = true, msg = "Genrate Password Sucessfull", data = resultForgetPassword }); //SSMD form
+                     return this.Ok(new { sucess = true, msg = "Genrate Password Sucessfull", data = resultForgetPassword }); 
                  }
                  else
                  {
@@ -96,13 +98,33 @@ namespace FundoNoteApplication.Controllers
             {
 
                 throw;
-            }
-
+            }        
+        
         }
+        [Authorize]
+        [HttpPut]
+        [Route("resetpassword")]
+        public IActionResult ResetPassword(string newPassword,string confirmPassword)
+       {
+            try
+            {
+                string email = User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
+                var result = userBL.ResetPassword(newPassword, confirmPassword, email);
+                if (result != null)
+                {
+                    return this.Ok(new { sucess = true, msg = "Password Reset Successfull", data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { sucess = false, msg = "Unable to Reset Password" });
+                }
 
-        private Exception Exception()
-        {
-            throw new NotImplementedException();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

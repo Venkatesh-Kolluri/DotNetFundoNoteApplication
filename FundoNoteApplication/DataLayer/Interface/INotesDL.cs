@@ -15,9 +15,9 @@ namespace DataLayer.Interface
         public List<NotesEntity> GetNote(long NoteId);
         public List<NotesEntity> GetNotebyUserId(long userId);
         public List<NotesEntity> GetAllNote();
-        public bool Pinned(long NoteID, long userId);
-        public bool Trashed(long NoteID, long userId);
-        public bool Archieved(long NoteID, long userId);
+        public bool Pinned(long noteId);
+        public bool Trashed(long noteId);
+        public bool Archieved(long noteId);
         public NotesEntity ColorNote(long NoteId, string color);
         public string Imaged(long NoteID, long userId, IFormFile image);
         public bool CheckUserId(long userID);

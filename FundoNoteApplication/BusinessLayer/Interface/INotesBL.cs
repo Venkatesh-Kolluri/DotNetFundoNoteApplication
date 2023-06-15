@@ -15,6 +15,9 @@ namespace BusinessLayer.Interface
         public List<NotesEntity> GetNote(long NoteId);
         public List<NotesEntity> GetNotebyUserId(long userId);
         public List<NotesEntity> GetAllNote();
+        public bool Pinned(long noteId);
+        public bool Archieved(long noteId);
+        public bool Trashed(long noteId);
 
     }
 }

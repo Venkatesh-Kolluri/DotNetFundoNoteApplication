@@ -12,7 +12,7 @@ namespace DataLayer.Interface
         public string Login(UserLogin userLogin);
         public string ForgetPass(string Email);
         public bool EmailCheck(string email);
-        //  public string GenerateSecurityToken(string email, long userId);
-
+        public string GenerateSecurityToken(string email, long userId);
+        public string ResetPassword(string newPassword, string confirmPassword, string email);
     }
 }

@@ -68,5 +68,17 @@ namespace BussinesLayer.Services
             }
         }
 
+        public string ResetPassword(string newPassword, string confirmPassword, string email)
+        {
+            try
+            {
+                return userDL.ResetPassword(newPassword,confirmPassword,email);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

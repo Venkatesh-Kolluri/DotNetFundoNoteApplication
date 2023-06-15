@@ -13,6 +13,7 @@ using BusinessLayer.Services;
 using DataLayer.Interface;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -171,12 +172,12 @@ namespace FundoNoteApplication.Controllers
         {
             try
             {
-                //var userId = notesModel.UserId;
-              /*  var check = notesBL.CheckUserId(userId);
+                var userId = notesModel.UserId;
+                var check = notesBL.CheckUserId(userId);
                 if (check != true)
                 {
                     return this.BadRequest(new { sucess = false, msg = "Not Created" });
-                }*/
+                }
                 var result = notesBL.UpdateNote(notesModel, NoteId);
                 if (result != null)
                 {
@@ -191,6 +192,67 @@ namespace FundoNoteApplication.Controllers
             catch (Exception ex)
             {
           
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut]
+        [Route(nameof(IsPinned))]
+        public IActionResult IsPinned(long noteId)
+        {
+            try
+            {
+                var result = notesBL.Pinned(noteId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "successfull", data = result });
+                }
+                else
+                    return this.BadRequest(new { Success = false, message = "Unable to execute Pin" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        [AllowAnonymous]
+        [HttpPut]
+        [Route(nameof(Archived))]
+        public IActionResult Archived(long noteId)
+        {
+            try
+            {
+                var result = notesBL.Archieved(noteId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "excuted successfully", data = result });
+                }
+                else
+                    return this.BadRequest(new { Success = false, message = "Unable to execute Archived" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        [AllowAnonymous]
+        [HttpPut]
+        [Route(nameof(Trash))]
+        public IActionResult Trash(long noteId)
+        {
+            try
+            {
+                var result = notesBL.Trashed(noteId);
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = "moved to trash successfully", data = result });
+                }
+                else
+                    return this.BadRequest(new { Success = false, message = "Unable to execute Trash" });
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }

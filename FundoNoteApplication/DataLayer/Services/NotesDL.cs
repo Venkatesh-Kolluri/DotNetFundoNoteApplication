@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -152,14 +153,30 @@ namespace DataLayer.Services
             }
 
         }
-     /*   public NotesEntity UpdateNote(NotesModel noteModel,long userId)
+        public NotesEntity UpdateNote(NotesModel notesModel,long userId)
         {
             try
             {
-                var getUserId = context.NotesTable.Where(x => x.UserId == noteModel.UserId).FirstOrDefault();
-                if (getUserId != null)
+             //    NotesEntity update = new NotesEntity();
+                var update = context.NotesTable.Where(x => x.UserId == notesModel.UserId).FirstOrDefault();
+                if (update != null)
                 {
-                    return null;    //context.NotesTable.Where(u => u.UserId == noteModel.UserId).ToList();
+                    update.Title = notesModel.Title;
+                    update.Note = notesModel.Note;
+                    update.Color = notesModel.Color;
+                    update.IsArchive = notesModel.IsArchive;
+                    update.IsPin = notesModel.IsPin;
+                    update.IsTrash = notesModel.IsTrash;
+                    update.Createat = notesModel.Createat;
+                    update.UserId = notesModel.UserId;
+                    context.Add(update);
+                    context.SaveChanges();
+
+                    return update;
+                }
+                else
+                {
+                    return null;
                 }
 
             }
@@ -168,10 +185,31 @@ namespace DataLayer.Services
 
                 throw;
             }
-        }*/
-        public bool Archieved(long NoteID, long userId)
+        }
+
+        public bool Pinned(long noteId)
         {
-            throw new NotImplementedException();
+            NotesEntity notesEntity = new NotesEntity();
+            var result = context.NotesTable.Where(x => x.NoteID == noteId ).FirstOrDefault();
+            result.IsPin = !result.IsPin;
+            context.SaveChanges();
+            return result.IsPin;
+           
+        }
+        public bool Trashed(long noteId)
+        {
+            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+            result.IsTrash = !result.IsTrash;
+            context.SaveChanges();
+            return result.IsTrash;
+        }
+        public bool Archieved(long noteId)
+        {
+          
+            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+            result.IsArchive = !result.IsArchive;
+            context.SaveChanges();
+            return result.IsArchive;
         }
 
         public NotesEntity ColorNote(long NoteId, string color)
@@ -182,19 +220,6 @@ namespace DataLayer.Services
         {
             throw new NotImplementedException();
         }
-        public bool Pinned(long NoteID, long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Trashed(long NoteID, long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public NotesEntity UpdateNote(NotesModel noteModel, long NoteId)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
