@@ -13,6 +13,8 @@ namespace BusinessLayer.Interface
         public string ForgetPassword(string Email);
         public bool EmailCheck(string email);
         public string ResetPassword(string NewPassword, string ConfirmPassword, string email);
+        public List<UserEntity> GetbyUserId(long userId);
+        public List<UserEntity> GetAllUser();
 
     }
 }

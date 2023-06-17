@@ -3,6 +3,7 @@ using CommonLayer.Model;
 using DataLayer.Db;
 using DataLayer.Interface;
 using DataLayer.Services;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
@@ -142,6 +143,18 @@ namespace BusinessLayer.Services
             try
             {
                 return notesDL.Trashed(noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string Image(long noteID, IFormFile image)
+        {
+            try
+            {
+                return notesDL.Image(noteID, image);
             }
             catch (Exception)
             {

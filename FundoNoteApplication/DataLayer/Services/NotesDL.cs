@@ -1,4 +1,6 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
 using DataLayer.Db;
 using DataLayer.Interface;
 using Microsoft.AspNetCore.Http;
@@ -80,13 +82,83 @@ namespace DataLayer.Services
             if (deleteNote != null)
             {
                 context.NotesTable.Remove(deleteNote);
-                context.SaveChanges(); 
+                context.SaveChanges();
                 return deleteNote;
             }
             else
             {
                 return null;
             }
+        }
+
+
+
+        public NotesEntity UpdateNote(NotesModel notesModel, long userId)
+        {
+            try
+            {
+                //    NotesEntity update = new NotesEntity();
+                var update = context.NotesTable.Where(x => x.UserId == notesModel.UserId).FirstOrDefault();
+                if (update != null)
+                {
+                    update.Title = notesModel.Title;
+                    update.Note = notesModel.Note;
+                    update.Color = notesModel.Color;
+                    update.IsArchive = notesModel.IsArchive;
+                    update.IsPin = notesModel.IsPin;
+                    update.IsTrash = notesModel.IsTrash;
+                    update.Createat = notesModel.Createat;
+                    update.UserId = notesModel.UserId;
+                    context.Add(update);
+                    context.SaveChanges();
+
+                    return update;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool Pinned(long noteId)
+        {
+            NotesEntity notesEntity = new NotesEntity();
+            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+            result.IsPin = !result.IsPin;
+            context.SaveChanges();
+            return result.IsPin;
+
+        }
+        public bool Trashed(long noteId)
+        {
+            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+            result.IsTrash = !result.IsTrash;
+            context.SaveChanges();
+            return result.IsTrash;
+        }
+        public bool Archieved(long noteId)
+        {
+
+            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+            result.IsArchive = !result.IsArchive;
+            context.SaveChanges();
+            return result.IsArchive;
+        }
+
+        public NotesEntity ColorNote(long NoteId, string color)
+        {
+            throw new NotImplementedException();
+        }
+      
+        public List<NotesEntity> GetNote(long NoteId)
+        {
+            throw new NotImplementedException();
         }
 
         public List<NotesEntity> GetAllNote()
@@ -97,27 +169,6 @@ namespace DataLayer.Services
                 if (AllNotes != null)
                 {
                     return context.NotesTable.ToList();
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public List<NotesEntity> GetNote(long NoteId)
-        {
-            try
-            {
-                var getNote = context.NotesTable.Where(x => x.NoteID == NoteId).FirstOrDefault();
-                if (NoteId != null)
-                {
-                    return context.NotesTable.Where(x => x.NoteID == NoteId).ToList();
                 }
                 else
                 {
@@ -153,73 +204,42 @@ namespace DataLayer.Services
             }
 
         }
-        public NotesEntity UpdateNote(NotesModel notesModel,long userId)
+        public string Image(long noteID, IFormFile image)
         {
+
             try
             {
-             //    NotesEntity update = new NotesEntity();
-                var update = context.NotesTable.Where(x => x.UserId == notesModel.UserId).FirstOrDefault();
-                if (update != null)
+                var result = context.NotesTable.Where(x => x.NoteID == noteID).FirstOrDefault();
+                if (result != null)
                 {
-                    update.Title = notesModel.Title;
-                    update.Note = notesModel.Note;
-                    update.Color = notesModel.Color;
-                    update.IsArchive = notesModel.IsArchive;
-                    update.IsPin = notesModel.IsPin;
-                    update.IsTrash = notesModel.IsTrash;
-                    update.Createat = notesModel.Createat;
-                    update.UserId = notesModel.UserId;
-                    context.Add(update);
-                    context.SaveChanges();
+                    Account account = new Account(
+                                      "dcyfdzhuw",
+                                      "351725126393698",
+                                      "qBCiF-p57Ui7KSp-oCExQ_uepng");
 
-                    return update;
+                    Cloudinary cloudinary = new Cloudinary(account);
+                    var uploadParameters = new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.FileName, image.OpenReadStream()),
+                    };
+                    var uploadResult = cloudinary.Upload(uploadParameters);
+                    string imagePath = uploadResult.Url.ToString();
+                    result.Image = image.FileName;
+                   
+                    context.SaveChanges();
+                    return "Image Upload Successfully";
                 }
                 else
                 {
                     return null;
                 }
-
+            
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
+        
         }
-
-        public bool Pinned(long noteId)
-        {
-            NotesEntity notesEntity = new NotesEntity();
-            var result = context.NotesTable.Where(x => x.NoteID == noteId ).FirstOrDefault();
-            result.IsPin = !result.IsPin;
-            context.SaveChanges();
-            return result.IsPin;
-           
-        }
-        public bool Trashed(long noteId)
-        {
-            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
-            result.IsTrash = !result.IsTrash;
-            context.SaveChanges();
-            return result.IsTrash;
-        }
-        public bool Archieved(long noteId)
-        {
-          
-            var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
-            result.IsArchive = !result.IsArchive;
-            context.SaveChanges();
-            return result.IsArchive;
-        }
-
-        public NotesEntity ColorNote(long NoteId, string color)
-        {
-            throw new NotImplementedException();
-        }      
-        public string Imaged(long NoteID, long userId, IFormFile image)
-        {
-            throw new NotImplementedException();
-        }
-       
     }
 }

@@ -14,5 +14,7 @@ namespace DataLayer.Interface
         public bool EmailCheck(string email);
         public string GenerateSecurityToken(string email, long userId);
         public string ResetPassword(string newPassword, string confirmPassword, string email);
+        public List<UserEntity> GetbyUserId(long userId);
+        public List<UserEntity> GetAllUser();
     }
 }

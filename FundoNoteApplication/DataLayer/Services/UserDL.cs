@@ -143,5 +143,48 @@ namespace DataLayer.Services
                 throw;
             }
         }
+
+        public List<UserEntity> GetAllUser()
+        {
+            try
+            {
+                var AllNotes = context.UserTable.FirstOrDefault();
+                if (AllNotes != null)
+                {
+                    return context.UserTable.ToList();
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public List<UserEntity> GetbyUserId(long userId)
+        {
+            try
+            {
+                var getUserId = context.UserTable.Where(x => x.UserId == userId).FirstOrDefault();
+                if (getUserId != null)
+                {
+                    return context.UserTable.Where(u => u.UserId == userId).ToList();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

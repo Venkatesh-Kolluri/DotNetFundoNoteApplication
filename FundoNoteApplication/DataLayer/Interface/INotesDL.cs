@@ -19,7 +19,7 @@ namespace DataLayer.Interface
         public bool Trashed(long noteId);
         public bool Archieved(long noteId);
         public NotesEntity ColorNote(long NoteId, string color);
-        public string Imaged(long NoteID, long userId, IFormFile image);
+        public string Image(long NoteID, IFormFile image);
         public bool CheckUserId(long userID);
     }
 

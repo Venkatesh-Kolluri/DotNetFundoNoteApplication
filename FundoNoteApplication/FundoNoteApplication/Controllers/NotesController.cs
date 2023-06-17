@@ -14,6 +14,7 @@ using DataLayer.Interface;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Http;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -91,80 +92,8 @@ namespace FundoNoteApplication.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route(nameof(GetNote))]
-        public IActionResult GetNote(long NoteId)
-        {
-            try
-            {
-                List<NotesEntity> result = notesBL.GetNote(NoteId);
-                if (result != null)
-                {
-                    return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
-                }
-                else
-                    return this.BadRequest(new { Success = false, message = "Note not Available" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route(nameof(GetNoteByUserID))]
-        public IActionResult GetNoteByUserID(long userId)
-        {
-            try
-            {
-              //  var userId = notesModel.UserId;
-                var check = notesBL.CheckUserId(userId);
-                if (check != true)
-                {
-                    return this.BadRequest(new { sucess = false, msg = "Not Created" });
-                }
-                //long note = Convert.ToInt32(User.Claims.FirstOrDefault(X => X.Type == "userID").Value);
-                List<NotesEntity> result = notesBL.GetNotebyUserId(userId);
-                if (result == null)
-                {
-                    return this.Ok(new { Success = false, message = " Note not Available" });
-                }
-                else
-                {
-                    if (result != null)
-                    {
-                        return this.Ok(new { Success = true, message = " Got note Successfully", data = result });
-                    }
-                    return this.BadRequest(new { Success = false, message = " error occured" });
+  
 
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route(nameof(GetAllNote))]
-        public IActionResult GetAllNote()
-        {
-            try
-            {
-                List<NotesEntity> result = notesBL.GetAllNote();
-                if (result != null)
-                {
-                    return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
-                }
-                else
-                    return this.BadRequest(new { Success = false, message = "Note not Available" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-        }
         [AllowAnonymous]
         [HttpPut]
         [Route(nameof(UpdateNote))]
@@ -209,8 +138,10 @@ namespace FundoNoteApplication.Controllers
                     return this.Ok(new { Success = true, message = "successfull", data = result });
                 }
                 else
-                    return this.BadRequest(new { Success = false, message = "Unable to execute Pin" });
+
+                return this.BadRequest(new { Success = false, message = "Unable to execute Pin" });
             }
+
             catch (Exception ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
@@ -250,12 +181,124 @@ namespace FundoNoteApplication.Controllers
                 }
                 else
                     return this.BadRequest(new { Success = false, message = "Unable to execute Trash" });
+            
             }
+
             catch (Exception ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
+            
+            }
+        }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [Route(nameof(GetNote))]
+            public IActionResult GetNote(long NoteId)
+            {
+                try
+                {
+                    List<NotesEntity> result = notesBL.GetNote(NoteId);
+                    if (result != null)
+                    {
+                        return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
+                    }
+                    else
+                        return this.BadRequest(new { Success = false, message = "Note not Available" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { success = false, message = ex.Message });
+                }
+            }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(nameof(GetNoteByUserID))]
+          public IActionResult GetNoteByUserID(long userId)
+          {
+              try
+              {
+                //  var userId = notesModel.UserId;
+                  var check = notesBL.CheckUserId(userId);
+                  if (check != true)
+                  {
+                      return this.BadRequest(new { sucess = false, msg = "Not Created" });
+                  }
+                  List<NotesEntity> result = notesBL.GetNotebyUserId(userId);
+                  if (result == null)
+                  {
+                      return this.Ok(new { Success = false, message = " Note not Available" });
+                  }
+                  else
+                  {
+                      if (result != null)
+                      {
+                          return this.Ok(new { Success = true, message = " Got note Successfully", data = result });
+                      }
+                      return this.BadRequest(new { Success = false, message = " error occured" });
+
+                  }
+              }
+              catch (Exception ex)
+              {
+                  return BadRequest(new { success = false, message = ex.Message });
+              }
+          }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(nameof(GetAllNote))]
+          public IActionResult GetAllNote()
+          {
+              try
+              {
+                  List<NotesEntity> result = notesBL.GetAllNote();
+                  if (result != null)
+                  {
+                      return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
+                  }
+                  else
+                      return this.BadRequest(new { Success = false, message = "Note not Available" });
+              }
+              catch (Exception ex)
+              {
+                  return BadRequest(new { success = false, message = ex.Message });
+              }
+          }
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("Image")]
+        public IActionResult Image(long noteId, IFormFile image)
+        {
+            try
+            {
+                //long userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+
+              /*  var userId = userId;
+                var check = notesBL.CheckUserId(userId);
+                if (check != true)
+                {
+                    return this.BadRequest(new { sucess = false, msg = "Not Created" });
+                }*/
+                var result = notesBL.Image(noteId, image);
+                if (result != null)
+                {
+                  
+                    return Ok(new { Status = true, Message = "Image Uploaded Successfully", Data = result });
+                }
+                else
+                {
+                    
+                    return BadRequest(new { Status = true, Message = "Image Uploaded Unsuccessfully", Data = result });
+                }
+            }
+            catch (Exception)
+            {
+               
+                throw;
             }
         }
     }
-    
+
 }

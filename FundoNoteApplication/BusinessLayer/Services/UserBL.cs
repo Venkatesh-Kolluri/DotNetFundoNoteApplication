@@ -80,5 +80,30 @@ namespace BussinesLayer.Services
                 throw;
             }
         }
+        public List<UserEntity> GetbyUserId(long userId)
+        {
+            try
+            {
+                return userDL.GetbyUserId(userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public List<UserEntity> GetAllUser()
+        {
+            try
+            {
+                return userDL.GetAllUser();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

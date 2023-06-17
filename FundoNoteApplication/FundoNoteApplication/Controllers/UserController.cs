@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Linq;
+using BusinessLayer.Services;
+using DataLayer.Db;
+using System.Collections.Generic;
+using DataLayer.Services;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -101,15 +105,17 @@ namespace FundoNoteApplication.Controllers
             }        
         
         }
+
+        [AllowAnonymous]
         [Authorize]
         [HttpPut]
         [Route("resetpassword")]
-        public IActionResult ResetPassword(string newPassword,string confirmPassword)
+        public IActionResult ResetPassword(PasswordReset passwordReset)
        {
             try
             {
-                string email = User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
-                var result = userBL.ResetPassword(newPassword, confirmPassword, email);
+                string email = User.Claims.FirstOrDefault(x => x.Type == "email").Value;
+                var result = userBL.ResetPassword(passwordReset.newPassword,passwordReset.confirmPassword, email);
                 if (result != null)
                 {
                     return this.Ok(new { sucess = true, msg = "Password Reset Successfull", data = result });
@@ -124,6 +130,60 @@ namespace FundoNoteApplication.Controllers
             {
 
                 throw;
+            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(nameof(GetByUserID))]
+        public IActionResult GetByUserID(long userId)
+        {
+            try
+            {
+                //  var userId = notesModel.UserId;
+              /*  var check = userBL.CheckUserId(userId);
+                if (check != true)
+                {
+                    return this.BadRequest(new { sucess = false, msg = "User details" });
+                }*/
+                List<UserEntity> result = userBL.GetbyUserId(userId);
+                if (result == null)
+                {
+                    return this.Ok(new { Success = false, message = " user not Available" });
+                }
+                else
+                {
+                    if (result != null)
+                    {
+                        return this.Ok(new { Success = true, message = " Got note Successfully", data = result });
+                    }
+                    return this.BadRequest(new { Success = false, message = " error occured" });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(nameof(GetAllUser))]
+        public IActionResult GetAllUser()
+        {
+            try
+            {
+                List<UserEntity> result = userBL.GetAllUser();
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = " User got Successfully", data = result });
+                }
+                else
+                    return this.BadRequest(new { Success = false, message = "User not Available" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
     }
