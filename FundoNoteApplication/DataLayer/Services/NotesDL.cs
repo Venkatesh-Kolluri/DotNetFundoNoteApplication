@@ -17,7 +17,7 @@ namespace DataLayer.Services
 {
     public class NotesDL : INotesDL
     {
-        private readonly NotesEntity userEntity;
+      //  private readonly NotesEntity userEntity;
         private readonly FundoContext context;
 
         public NotesDL(FundoContext context, IConfiguration config)
@@ -156,9 +156,25 @@ namespace DataLayer.Services
             throw new NotImplementedException();
         }
       
-        public List<NotesEntity> GetNote(long NoteId)
+        public List<NotesEntity> GetNote(long noteId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var getNoteId = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+                if (getNoteId != null)
+                {
+                    return context.NotesTable.Where(u => u.NoteID == noteId).ToList();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<NotesEntity> GetAllNote()

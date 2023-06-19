@@ -13,6 +13,14 @@
     <Compile Remove="Migrations\20230612115933_NotesInfoMigration.Designer.cs" />
     <Compile Remove="Migrations\20230613042125_NotesMigration.cs" />
     <Compile Remove="Migrations\20230613042125_NotesMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230617121952_collaboratorMigration.cs" />
+    <Compile Remove="Migrations\20230617121952_collaboratorMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230617122959_collaboratorMigration.cs" />
+    <Compile Remove="Migrations\20230617122959_collaboratorMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230618133101_CollaboratorMigration.cs" />
+    <Compile Remove="Migrations\20230618133101_CollaboratorMigration.Designer.cs" />
+    <Compile Remove="Migrations\20230618133626_CollaboratorMigration.cs" />
+    <Compile Remove="Migrations\20230618133626_CollaboratorMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
