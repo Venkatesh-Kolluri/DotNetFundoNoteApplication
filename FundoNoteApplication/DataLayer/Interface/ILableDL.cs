@@ -1,0 +1,17 @@
+﻿using CommonLayer.Model;
+using DataLayer.Db;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DataLayer.Interface
+{
+    public interface ILableDL
+    {
+        public LabelEntity AddLable(LabelNotes labelNotes);
+        public LabelEntity DeleteLabel(long labelId);
+        public LabelEntity UpdateLabel(long labelId, int noteId);
+        public List<LabelEntity> GetAllLabel();
+        public List<LabelEntity> GetByLabelId();
+    }
+}
