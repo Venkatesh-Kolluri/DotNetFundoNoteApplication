@@ -151,11 +151,30 @@ namespace DataLayer.Services
             return result.IsArchive;
         }
 
-        public NotesEntity ColorNote(long NoteId, string color)
+        public NotesEntity ColorNote(long noteId, string color)
         {
-            throw new NotImplementedException();
-        }
-      
+            try
+            {
+                var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
+                if (result != null)
+                {
+
+                    result.Color = color;
+                    context.NotesTable.Update(result);
+                    context.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }      
         public List<NotesEntity> GetNote(long noteId)
         {
             try
@@ -257,5 +276,37 @@ namespace DataLayer.Services
             }
         
         }
+
+        public IQueryable<NotesEntity> Find(string note)
+        {
+            try
+            {
+              //  string query = note;
+
+                IQueryable<NotesEntity> queryable = context.Set<NotesEntity>().AsQueryable();
+                var find = context.NotesTable.Where(x=>x.Note==note);
+                if (find != null)
+                {
+                    queryable = queryable.Where(x => x.Note.Contains(note));
+                    return queryable;
+                   // return context.NotesTable.Where(u => u.Note == note).ToList();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }
+/*Your task is to develop an API that enables users to find notes based on keywords or phrases.
+    The API should accept a search query parameter and return the search results in a paginated format. 
+    This means that the API should also include
+    the total number of rows found for the search query, so that users can understand how many notes match their criteria.
+*/

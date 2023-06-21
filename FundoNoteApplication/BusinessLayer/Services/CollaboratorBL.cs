@@ -42,5 +42,19 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public List<CollaboratorEntity> GetAllCollaborator()
+        {
+            try
+            {
+                return collaboratorDL.GetAllCollaborator();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

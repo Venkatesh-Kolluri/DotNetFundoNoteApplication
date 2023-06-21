@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace DataLayer.Interface
 {
@@ -21,6 +22,7 @@ namespace DataLayer.Interface
         public NotesEntity ColorNote(long NoteId, string color);
         public string Image(long NoteID, IFormFile image);
         public bool CheckUserId(long userID);
+        public IQueryable<NotesEntity> Find(string note);
     }
 
 }

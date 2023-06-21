@@ -10,6 +10,6 @@ namespace BusinessLayer.Interface
     {
         public CollaboratorEntity AddCollab(Collaborator collaborator);
         public CollaboratorEntity DeleteCollab(long CollabId);
-       // public List<CollaboratorEntity> GetAllCollaborator();
+        public List<CollaboratorEntity> GetAllCollaborator();
     }
 }

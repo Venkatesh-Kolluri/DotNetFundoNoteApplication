@@ -3,6 +3,7 @@ using DataLayer.Db;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BusinessLayer.Interface
@@ -20,6 +21,7 @@ namespace BusinessLayer.Interface
         public bool Archieved(long noteId);
         public bool Trashed(long noteId);
         public string Image(long noteID, IFormFile image);
+        public IQueryable<NotesEntity> Find(string note);
 
     }
 }

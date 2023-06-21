@@ -299,6 +299,37 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("FindNotes")]
+        public IActionResult FindNotes(string note)
+        {
+            try
+            {
+                IQueryable<NotesEntity> result = notesBL.Find(note);
+                if (result != null)
+                {
+
+                    return Ok(new { Status = true, Message = "note found Successfully", Data = result });
+                }
+                else
+                {
+
+                    return BadRequest(new { Status = true, Message = "notes are unavailable ", Data = result });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 
 }
+/*Your task is to develop an API that enables users to find notes based on keywords or phrases.
+    The API should accept a search query parameter and return the search results in a paginated format. 
+    This means that the API should also include
+    the total number of rows found for the search query, so that users can understand how many notes match their criteria.
+*/

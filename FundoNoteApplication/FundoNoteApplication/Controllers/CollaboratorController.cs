@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -70,6 +71,26 @@ namespace FundoNoteApplication.Controllers
             catch (Exception ex)
             {
 
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(nameof(GetAllCollaborator))]
+        public IActionResult GetAllCollaborator()
+        {
+            try
+            {
+                List<CollaboratorEntity> result = collaboratorBL.GetAllCollaborator();
+                if (result != null)
+                {
+                    return this.Ok(new { Success = true, message = " collaborator got Successfully", data = result });
+                }
+                else
+                    return this.BadRequest(new { Success = false, message = "Collaborator not Available" });
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }

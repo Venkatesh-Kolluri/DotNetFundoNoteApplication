@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Text;
 
 namespace BusinessLayer.Services
@@ -155,6 +156,18 @@ namespace BusinessLayer.Services
             try
             {
                 return notesDL.Image(noteID, image);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public IQueryable<NotesEntity> Find(string note)
+        {
+            try
+            {
+                return notesDL.Find(note);
             }
             catch (Exception)
             {
