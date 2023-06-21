@@ -10,8 +10,8 @@ namespace DataLayer.Interface
     {
         public LabelEntity AddLable(LabelNotes labelNotes);
         public LabelEntity DeleteLabel(long labelId);
-        public LabelEntity UpdateLabel(long labelId, int noteId);
+        public LabelEntity UpdateLabel(LabelNotes labelNotes, int noteId);
         public List<LabelEntity> GetAllLabel();
-        public List<LabelEntity> GetByLabelId();
+        public List<LabelEntity> GetByLabelId(long labelId);
     }
 }
