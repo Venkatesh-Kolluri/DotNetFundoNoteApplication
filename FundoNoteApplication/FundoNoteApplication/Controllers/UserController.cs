@@ -1,21 +1,17 @@
 ﻿using BusinessLayer.Interface;
-using BussinesLayer.Services;
 using CommonLayer.Model;
+using DataLayer.Db;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System;
-using System.Linq;
-using BusinessLayer.Services;
-using DataLayer.Db;
 using System.Collections.Generic;
-using DataLayer.Services;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -26,10 +22,14 @@ namespace FundoNoteApplication.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
+        private readonly FundoContext context;
+        private readonly IDistributedCache distributedCache;
 
-        public UserController(IUserBL userBL)
+        public UserController(IUserBL userBL,FundoContext context,IDistributedCache distributedCache)
         {
             this.userBL = userBL;
+            this.context = context;
+            this.distributedCache = distributedCache;
         }
         [AllowAnonymous]
         [HttpPost]
@@ -185,6 +185,31 @@ namespace FundoNoteApplication.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
+        }
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllNotesUsingRedisCache()
+        {
+            var cacheKey = "UsersList";
+            string serializedUsersList;
+            var usersList = new List<UserEntity>();
+            var redisUsersList = await distributedCache.GetAsync(cacheKey);
+            if (redisUsersList != null)
+            {
+                serializedUsersList = Encoding.UTF8.GetString(redisUsersList);
+                usersList = JsonConvert.DeserializeObject<List<UserEntity>>(serializedUsersList);
+            }
+            else
+            {
+                usersList = await context.UserTable.ToListAsync();
+                serializedUsersList = JsonConvert.SerializeObject(usersList);
+                redisUsersList = Encoding.UTF8.GetBytes(serializedUsersList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisUsersList, options);
+            }
+            return Ok(usersList);
+
         }
     }
 }

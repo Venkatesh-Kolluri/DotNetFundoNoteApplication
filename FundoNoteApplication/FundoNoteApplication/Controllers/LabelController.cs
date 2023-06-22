@@ -4,7 +4,14 @@ using DataLayer.Db;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -14,11 +21,13 @@ namespace FundoNoteApplication.Controllers
     {
         private readonly ILabelBL labelBL;
         private readonly FundoContext context;
+        private readonly IDistributedCache distributedCache;
 
-        public LabelController(ILabelBL labelBL,FundoContext context)
+        public LabelController(ILabelBL labelBL,FundoContext context,IDistributedCache distributedCache)
         {
             this.labelBL = labelBL;
             this.context = context;
+            this.distributedCache = distributedCache;
         }
   
         [HttpPost]
@@ -137,6 +146,32 @@ namespace FundoNoteApplication.Controllers
 
                 throw;
             }
+        }
+
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllLabelsUsingRedisCache()
+        {
+            var cacheKey = "LabelsList";
+            string serializedLabelsList;
+            var labelsList = new List<LabelEntity>();
+            var redisLabelsList = await distributedCache.GetAsync(cacheKey);
+            if (redisLabelsList != null)
+            {
+                serializedLabelsList = Encoding.UTF8.GetString(redisLabelsList);
+                labelsList = JsonConvert.DeserializeObject<List<LabelEntity>>(serializedLabelsList);
+            }
+            else
+            {
+                labelsList = await context.LabelTable.ToListAsync();
+                serializedLabelsList = JsonConvert.SerializeObject(labelsList);
+                redisLabelsList = Encoding.UTF8.GetBytes(serializedLabelsList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisLabelsList, options);
+            }
+            return Ok(labelsList);
+
         }
 
     }

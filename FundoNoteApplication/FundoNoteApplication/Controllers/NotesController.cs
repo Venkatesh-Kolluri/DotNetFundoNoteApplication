@@ -15,6 +15,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -25,21 +31,24 @@ namespace FundoNoteApplication.Controllers
     {
          INotesBL notesBL;
         private readonly FundoContext context;
-        public NotesController(INotesBL notesBL,FundoContext context)
+       // private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+      
+
+        public NotesController(INotesBL notesBL,FundoContext context,IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
             this.context = context;
+          //  this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
+
         [HttpPost]
         [Route("addnotes")]
         public IActionResult AddNotes(NotesModel notesModel)
         {
             try
             {
-                //  UserEntity userEntity = new UserEntity();
-                // long userId = userEntity.UserId;
-                //        long userId= notesModel.UserId;
-                //long userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
 
                 var userId = notesModel.UserId;
                 var check = notesBL.CheckUserId(userId);
@@ -316,11 +325,30 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllNotesUsingRedisCache()
+        {
+            var cacheKey = "NotesList";
+            string serializedNotesList;
+            var notesList = new List<NotesEntity>();
+            var redisNotesList = await distributedCache.GetAsync(cacheKey);
+            if (redisNotesList != null)
+            {
+                serializedNotesList = Encoding.UTF8.GetString(redisNotesList);
+                notesList = JsonConvert.DeserializeObject<List<NotesEntity>>(serializedNotesList);
+            }
+            else
+            {
+                notesList = await context.NotesTable.ToListAsync();
+                serializedNotesList = JsonConvert.SerializeObject(notesList);
+                redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisNotesList, options);
+            }
+            return Ok(notesList);
+     
+        }
     }
-
 }
-/*Your task is to develop an API that enables users to find notes based on keywords or phrases.
-    The API should accept a search query parameter and return the search results in a paginated format. 
-    This means that the API should also include
-    the total number of rows found for the search query, so that users can understand how many notes match their criteria.
-*/
