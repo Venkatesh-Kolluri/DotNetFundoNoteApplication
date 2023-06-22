@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace FundoNoteApplication.Controllers
 {
-    [Authorize]
+
     [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase
@@ -30,10 +30,8 @@ namespace FundoNoteApplication.Controllers
             this.notesBL = notesBL;
             this.context = context;
         }
-
-        [AllowAnonymous]
         [HttpPost]
-        [Route(nameof(AddNotes))]
+        [Route("addnotes")]
         public IActionResult AddNotes(NotesModel notesModel)
         {
             try
@@ -68,9 +66,8 @@ namespace FundoNoteApplication.Controllers
 
         }
 
-        [AllowAnonymous]
         [HttpDelete]
-        [Route(nameof(DeleteNotes))]
+        [Route("deletenotes")]
         public IActionResult DeleteNotes(long NoteId)
         {
             try
@@ -94,9 +91,8 @@ namespace FundoNoteApplication.Controllers
         }
   
 
-        [AllowAnonymous]
         [HttpPut]
-        [Route(nameof(UpdateNote))]
+        [Route("updatenote")]
         public IActionResult UpdateNote(NotesModel notesModel, long NoteId)
         {
             try
@@ -125,9 +121,8 @@ namespace FundoNoteApplication.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPut]
-        [Route(nameof(IsPinned))]
+        [Route("ispinned")]
         public IActionResult IsPinned(long noteId)
         {
             try
@@ -147,9 +142,9 @@ namespace FundoNoteApplication.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [AllowAnonymous]
+       
         [HttpPut]
-        [Route(nameof(Archived))]
+        [Route("archived")]
         public IActionResult Archived(long noteId)
         {
             try
@@ -167,9 +162,9 @@ namespace FundoNoteApplication.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [AllowAnonymous]
+
         [HttpPut]
-        [Route(nameof(Trash))]
+        [Route("trash")]
         public IActionResult Trash(long noteId)
         {
             try
@@ -191,9 +186,8 @@ namespace FundoNoteApplication.Controllers
             }
         }
     
-    [AllowAnonymous]
     [HttpGet]
-    [Route(nameof(GetNote))]
+    [Route("getnote")]
             public IActionResult GetNote(long NoteId)
             {
                 try
@@ -212,9 +206,8 @@ namespace FundoNoteApplication.Controllers
                 }
             }
 
-        [AllowAnonymous]
         [HttpGet]
-        [Route(nameof(GetNoteByUserID))]
+        [Route("getnotebyuserid")]
           public IActionResult GetNoteByUserID(long userId)
           {
               try
@@ -246,9 +239,8 @@ namespace FundoNoteApplication.Controllers
               }
           }
 
-        [AllowAnonymous]
         [HttpGet]
-        [Route(nameof(GetAllNote))]
+        [Route("getallnote")]
           public IActionResult GetAllNote()
           {
               try
@@ -266,7 +258,7 @@ namespace FundoNoteApplication.Controllers
                   return BadRequest(new { success = false, message = ex.Message });
               }
           }
-        [AllowAnonymous]
+    
         [HttpPut]
         [Route("Image")]
         public IActionResult Image(long noteId, IFormFile image)
@@ -300,7 +292,6 @@ namespace FundoNoteApplication.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("FindNotes")]
         public IActionResult FindNotes(string note)

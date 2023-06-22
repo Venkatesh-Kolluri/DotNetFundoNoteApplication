@@ -50,6 +50,8 @@ namespace FundoNoteApplication
             services.AddTransient<INotesBL, NotesBL>();
             services.AddTransient<ICollaboratorBL, CollaboratorBL>();
             services.AddTransient<ICollaboratorDL, CollaboratorDL>();
+            services.AddTransient<ILabelBL, LabelBL>();
+            services.AddTransient<ILableDL, LabelDL>();
             services.AddSwaggerGen(swagger =>
             {
                 //This is to generate the Default UI of Swagger Documentation  

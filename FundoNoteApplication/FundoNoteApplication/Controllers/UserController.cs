@@ -22,7 +22,7 @@ namespace FundoNoteApplication.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+  
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
@@ -55,8 +55,9 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
-        [AllowAnonymous]
-        [HttpPost(nameof(Login))]
+  
+        [HttpPost]
+        [Route("login")]
         public IActionResult Login(UserLogin userlogin)
         {
             try
@@ -75,7 +76,7 @@ namespace FundoNoteApplication.Controllers
 
             }
         }
-        [AllowAnonymous]
+      
         [HttpPost]
         [Route("forgetpassword")]
         public IActionResult ForgetPassword(string userEmail)
@@ -106,7 +107,7 @@ namespace FundoNoteApplication.Controllers
         
         }
 
-        [AllowAnonymous]
+       
         [Authorize]
         [HttpPut]
         [Route("resetpassword")]
@@ -132,9 +133,9 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
-        [AllowAnonymous]
+        
         [HttpGet]
-        [Route(nameof(GetByUserID))]
+        [Route("getbyuserID")]
         public IActionResult GetByUserID(long userId)
         {
             try
@@ -166,9 +167,8 @@ namespace FundoNoteApplication.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        [Route(nameof(GetAllUser))]
+        [Route("getalluser")]
         public IActionResult GetAllUser()
         {
             try
