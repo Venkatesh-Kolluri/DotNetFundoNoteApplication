@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hCfxsxPzEXVCC59hSdwhxNvO9TAcKWKqNMzycAF3JuFRlt5ZG2Q8rkiGGJQtXgaqE3ht58EiWwQcKDtcUQtV7g==",
+  "dgSpecHash": "GErmqopOzYtY+J7S1uZxePn9/S55gvEPVVP/TFrVTfv2aUaL1hVIOaHlnwFQZtVLaQLfPVRZpSpVISTdv8FmDw==",
   "success": true,
   "projectFilePath": "E:\\BridgelabzProject\\FundoNoteApplication\\FundoNoteApplication\\FundoNoteApplication.csproj",
   "expectedPackageFiles": [
@@ -49,6 +49,11 @@
     "C:\\Users\\Venky\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Venky\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\Venky\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\Venky\\.nuget\\packages\\nlog\\5.2.0\\nlog.5.2.0.nupkg.sha512",
+    "C:\\Users\\Venky\\.nuget\\packages\\nlog.config\\4.7.15\\nlog.config.4.7.15.nupkg.sha512",
+    "C:\\Users\\Venky\\.nuget\\packages\\nlog.extensions.logging\\5.3.0\\nlog.extensions.logging.5.3.0.nupkg.sha512",
+    "C:\\Users\\Venky\\.nuget\\packages\\nlog.schema\\4.7.15\\nlog.schema.4.7.15.nupkg.sha512",
+    "C:\\Users\\Venky\\.nuget\\packages\\nlog.web.aspnetcore\\5.3.0\\nlog.web.aspnetcore.5.3.0.nupkg.sha512",
     "C:\\Users\\Venky\\.nuget\\packages\\pipelines.sockets.unofficial\\2.2.0\\pipelines.sockets.unofficial.2.2.0.nupkg.sha512",
     "C:\\Users\\Venky\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
     "C:\\Users\\Venky\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
