@@ -17,14 +17,18 @@ namespace DataLayer.Services
 {
     public class NotesDL : INotesDL
     {
-      //  private readonly NotesEntity userEntity;
+
         private readonly FundoContext context;
 
         public NotesDL(FundoContext context, IConfiguration config)
         {
             this.context = context;
         }
-
+        /// <summary>
+        /// CheckUsedId method is used to check weather the UsedId exist in the database or not
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
         public bool CheckUserId(long userID)
         {
             try
@@ -43,7 +47,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// AddNote method is used to add notes in the application,we can add as many notes as we want
+        /// </summary>
+        /// <param name="notes"></param>
+        /// <returns></returns>
         public NotesEntity AddNote(NotesModel notes)
         {
             try
@@ -76,6 +84,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
+        /// <summary>
+        /// DeleteNote method is used to delete notes from the application with the help of noteId
+        /// </summary>
+        /// <param name="NoteId"></param>
+        /// <returns></returns>
         public NotesEntity DeleteNote(long NoteId)
         {
             var deleteNote = context.NotesTable.Where(a => a.NoteID == NoteId).FirstOrDefault();
@@ -90,14 +103,17 @@ namespace DataLayer.Services
                 return null;
             }
         }
-
-
-
+        /// <summary>
+        /// We can update the existing notes with the help of UpdateNote method by using userId
+        /// </summary>
+        /// <param name="notesModel"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public NotesEntity UpdateNote(NotesModel notesModel, long userId)
         {
             try
             {
-                //    NotesEntity update = new NotesEntity();
+
                 var update = context.NotesTable.Where(x => x.UserId == notesModel.UserId).FirstOrDefault();
                 if (update != null)
                 {
@@ -126,6 +142,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
+        /// <summary>
+        /// Pinned method is used to pin/unpin a certain note whenever the method is called 
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         public bool Pinned(long noteId)
         {
             NotesEntity notesEntity = new NotesEntity();
@@ -135,6 +156,11 @@ namespace DataLayer.Services
             return result.IsPin;
 
         }
+        /// <summary>
+        /// Trashed method is used to send the note to trash 
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         public bool Trashed(long noteId)
         {
             var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
@@ -142,6 +168,11 @@ namespace DataLayer.Services
             context.SaveChanges();
             return result.IsTrash;
         }
+        /// <summary>
+        /// Whenever Archived method is called the note will be archived
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         public bool Archieved(long noteId)
         {
 
@@ -150,7 +181,12 @@ namespace DataLayer.Services
             context.SaveChanges();
             return result.IsArchive;
         }
-
+        /// <summary>
+        /// ColorNote method will be used to add color to the notes by selecting different color for the note
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public NotesEntity ColorNote(long noteId, string color)
         {
             try
@@ -175,6 +211,11 @@ namespace DataLayer.Services
                 throw;
             }
         }      
+        /// <summary>
+        /// GetNote method is used to retrive a particular note from the database with the help of noteId
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         public List<NotesEntity> GetNote(long noteId)
         {
             try
@@ -195,7 +236,10 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// GettAllNotes method is used to retrive all the notes available in the database
+        /// </summary>
+        /// <returns></returns>
         public List<NotesEntity> GetAllNote()
         {
             try
@@ -217,7 +261,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// This method is used to retrive note from database by using userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<NotesEntity> GetNotebyUserId(long userId)
         {
             try
@@ -239,6 +287,13 @@ namespace DataLayer.Services
             }
 
         }
+        /// <summary>
+        /// Image method is used to upload image in the cloudinary for a particular note with help of noteId
+        /// </summary>
+        /// <param name="noteID"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public string Image(long noteID, IFormFile image)
         {
 
@@ -276,7 +331,11 @@ namespace DataLayer.Services
             }
         
         }
-
+        /// <summary>
+        /// Find method is used to search the notes having particular lines and word in the notesDescription
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         public IQueryable<NotesEntity> Find(string note)
         {
             try
@@ -305,8 +364,3 @@ namespace DataLayer.Services
         }
     }
 }
-/*Your task is to develop an API that enables users to find notes based on keywords or phrases.
-    The API should accept a search query parameter and return the search results in a paginated format. 
-    This means that the API should also include
-    the total number of rows found for the search query, so that users can understand how many notes match their criteria.
-*/
