@@ -24,7 +24,11 @@ namespace DataLayer.Services
             this.secret = config.GetSection("JwtConfig").GetSection("secret").Value;
             this.expDate = config.GetSection("JwtConfig").GetSection("expirationInMinutes").Value;
         }
-
+        /// <summary>
+        /// Register method used to register users in the application
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public UserEntity Register(UserRegistration user)
         {
             try
@@ -49,7 +53,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// Login method is used to get access to a particular user into the application
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         public string Login(UserLogin userLogin)
         {
             UserEntity userEntity = new UserEntity();
@@ -62,6 +70,12 @@ namespace DataLayer.Services
             }
             return null ;
         }
+        /// <summary>
+        /// This method is used to generate the token whenever the method is called
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public string GenerateSecurityToken(string email,long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -80,6 +94,11 @@ namespace DataLayer.Services
 
             return tokenHandler.WriteToken(token);
         }
+        /// <summary>
+        /// ForgetPass method is used to generate a token and mail the token to a particular user to reset the users password
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <returns></returns>
         public string ForgetPass(string Email)
         {
             try
@@ -102,7 +121,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// EmailCheck method is used to check weather the entered email is available in the database or not
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool EmailCheck(string email)
         {
             try
@@ -121,6 +144,13 @@ namespace DataLayer.Services
                 throw;
             }
         }
+       /// <summary>
+       /// ResetPassword method is used to change the old password into new password
+       /// </summary>
+       /// <param name="newPassword"></param>
+       /// <param name="confirmPassword"></param>
+       /// <param name="email"></param>
+       /// <returns></returns>
         public string ResetPassword(string newPassword,string confirmPassword, string email)
         {
             try
@@ -143,7 +173,10 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// GetAllUser method will retrive all the users present in the database
+        /// </summary>
+        /// <returns></returns>
         public List<UserEntity> GetAllUser()
         {
             try
@@ -165,6 +198,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
+        /// <summary>
+        /// GetbyUserId method is used to get the all the details of the user with particular userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<UserEntity> GetbyUserId(long userId)
         {
             try
