@@ -51,8 +51,7 @@ namespace FundoNoteApplication
             services.AddTransient<ICollaboratorBL, CollaboratorBL>();
             services.AddTransient<ICollaboratorDL, CollaboratorDL>();
             services.AddTransient<ILabelBL, LabelBL>();
-            services.AddTransient<ILableDL, LabelDL>();
-          
+            services.AddTransient<ILableDL, LabelDL>();    
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = "localhost:6379";
