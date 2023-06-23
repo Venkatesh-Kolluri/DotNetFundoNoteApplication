@@ -19,6 +19,11 @@ namespace DataLayer.Services
             this.context = context;
             this.config = config;
         }
+        /// <summary>
+        /// AddLabel method help to add labels to the note 
+        /// </summary>
+        /// <param name="labelNotes"></param>
+        /// <returns></returns>
         public LabelEntity AddLable(LabelNotes labelNotes)
         {
             try
@@ -46,7 +51,11 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// DeleteLabel method is used to delete labels from the notes with hep of labelId
+        /// </summary>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
         public LabelEntity DeleteLabel(long labelId)
         {
 
@@ -71,7 +80,10 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// GetAllLabel method will return all the labels present in the note
+        /// </summary>
+        /// <returns></returns>
         public List<LabelEntity> GetAllLabel()
         {
             var getLabels = context.LabelTable.FirstOrDefault();
@@ -84,7 +96,11 @@ namespace DataLayer.Services
                 return null;
             }
         }
-
+        /// <summary>
+        /// This method is used to gives you a particular label from all the labels with the help of labelId
+        /// </summary>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
         public List<LabelEntity> GetByLabelId(long labelId)
         {
             try
@@ -105,7 +121,12 @@ namespace DataLayer.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// UpdateLabel method is used to update the existing label in the note
+        /// </summary>
+        /// <param name="labelNotes"></param>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
         public LabelEntity UpdateLabel(LabelNotes labelNotes,int noteId)
         {
             try
@@ -127,8 +148,8 @@ namespace DataLayer.Services
                 {
                     return null;
                 }
-
-
+            
+            
             }
             catch (Exception)
             {
