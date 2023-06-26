@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,13 +23,14 @@ namespace FundoNoteApplication.Controllers
         ICollaboratorBL collaboratorBL;
         private readonly FundoContext context;
         private readonly IDistributedCache distributedCache;
+        private readonly IMemoryCache memoryCache;
 
-        public CollaboratorController(ICollaboratorBL collaboratorBL, FundoContext context,IDistributedCache distributedCache)
+        public CollaboratorController(ICollaboratorBL collaboratorBL, FundoContext context,IMemoryCache memoryCache,IDistributedCache distributedCache)
         {
             this.collaboratorBL = collaboratorBL;
             this.context = context;
             this.distributedCache = distributedCache;
-
+            this.memoryCache = memoryCache;
         }
 
         [AllowAnonymous]

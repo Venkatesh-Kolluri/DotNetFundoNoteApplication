@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -22,12 +23,14 @@ namespace FundoNoteApplication.Controllers
         private readonly ILabelBL labelBL;
         private readonly FundoContext context;
         private readonly IDistributedCache distributedCache;
+        private readonly IMemoryCache memoryCache;
 
-        public LabelController(ILabelBL labelBL,FundoContext context,IDistributedCache distributedCache)
+        public LabelController(ILabelBL labelBL,FundoContext context, IMemoryCache  memoryCache,IDistributedCache distributedCache)
         {
             this.labelBL = labelBL;
             this.context = context;
             this.distributedCache = distributedCache;
+            this.memoryCache = memoryCache;
         }
   
         [HttpPost]

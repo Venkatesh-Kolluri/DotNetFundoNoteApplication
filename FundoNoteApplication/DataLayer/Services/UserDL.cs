@@ -15,7 +15,7 @@ namespace DataLayer.Services
     public class UserDL : IUserDL
     {
         private readonly FundoContext context;
-         private readonly string secret ;
+        private readonly string secret ;
         private readonly string expDate;
 
         public UserDL(FundoContext context, IConfiguration config)

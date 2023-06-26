@@ -31,15 +31,15 @@ namespace FundoNoteApplication.Controllers
     {
          INotesBL notesBL;
         private readonly FundoContext context;
-       // private readonly IMemoryCache memoryCache;
+        private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
       
 
-        public NotesController(INotesBL notesBL,FundoContext context,IDistributedCache distributedCache)
+        public NotesController(INotesBL notesBL,FundoContext context,IMemoryCache  memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
             this.context = context;
-          //  this.memoryCache = memoryCache;
+            this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
 

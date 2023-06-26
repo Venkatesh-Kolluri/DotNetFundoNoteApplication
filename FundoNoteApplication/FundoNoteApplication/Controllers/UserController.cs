@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +24,23 @@ namespace FundoNoteApplication.Controllers
   
     public class UserController : ControllerBase
     {
+        private readonly ILogger<UserController> logger;
         private readonly IUserBL userBL;
         private readonly FundoContext context;
         private readonly IDistributedCache distributedCache;
+        private readonly IMemoryCache memoryCache;
 
-        public UserController(IUserBL userBL,FundoContext context,IDistributedCache distributedCache)
+        public UserController(IUserBL userBL,FundoContext context, ILogger<UserController> logger, IMemoryCache  memoryCache,IDistributedCache distributedCache)
         {
             this.userBL = userBL;
             this.context = context;
             this.distributedCache = distributedCache;
+            this.memoryCache = memoryCache;
+            this.logger = logger;
         }
-        [AllowAnonymous]
+       
         [HttpPost]
-        [Route(nameof(Register))]
+        [Route("register")]
         public IActionResult Register(UserRegistration userRegistration)
         {
 
@@ -176,10 +183,15 @@ namespace FundoNoteApplication.Controllers
                 List<UserEntity> result = userBL.GetAllUser();
                 if (result != null)
                 {
+                    logger.LogInformation("Got all users");
                     return this.Ok(new { Success = true, message = " User got Successfully", data = result });
                 }
                 else
+                {
+                    logger.LogInformation("Users are not available");
                     return this.BadRequest(new { Success = false, message = "User not Available" });
+                }
+                    
             }
             catch (Exception ex)
             {
