@@ -117,29 +117,37 @@ namespace FundoNoteApplication.Controllers
 
 
         [HttpGet("redis")]
-        public async Task<IActionResult> GetAllLabelsUsingRedisCache()
+        public async Task<IActionResult> GetAllCollaboratorsUsingRedisCache()
         {
-            var cacheKey = "CollaboratorList";
-            string serializedCollaboratorList;
-            var collaboratorList = new List<CollaboratorEntity>();
-            var redisCollaboratorList = await distributedCache.GetAsync(cacheKey);
-            if (redisCollaboratorList != null)
+            try
             {
-                serializedCollaboratorList = Encoding.UTF8.GetString(redisCollaboratorList);
-                collaboratorList = JsonConvert.DeserializeObject<List<CollaboratorEntity>>(serializedCollaboratorList);
+                logger.LogInformation("getting all availabel collaborators");
+                var cacheKey = "CollaboratorList";
+                string serializedCollaboratorList;
+                var collaboratorList = new List<CollaboratorEntity>();
+                var redisCollaboratorList = await distributedCache.GetAsync(cacheKey);
+                if (redisCollaboratorList != null)
+                {
+                    serializedCollaboratorList = Encoding.UTF8.GetString(redisCollaboratorList);
+                    collaboratorList = JsonConvert.DeserializeObject<List<CollaboratorEntity>>(serializedCollaboratorList);
+                }
+                else
+                {
+                    collaboratorList = await context.CollaboratorTable.ToListAsync();
+                    serializedCollaboratorList = JsonConvert.SerializeObject(collaboratorList);
+                    redisCollaboratorList = Encoding.UTF8.GetBytes(serializedCollaboratorList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(cacheKey, redisCollaboratorList, options);
+                }
+                return Ok(collaboratorList);
             }
-            else
+            catch (Exception ex)
             {
-                collaboratorList = await context.CollaboratorTable.ToListAsync();
-                serializedCollaboratorList = JsonConvert.SerializeObject(collaboratorList);
-                redisCollaboratorList = Encoding.UTF8.GetBytes(serializedCollaboratorList);
-                var options = new DistributedCacheEntryOptions()
-                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-                await distributedCache.SetAsync(cacheKey, redisCollaboratorList, options);
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
-            return Ok(collaboratorList);
-
         }
 
     }

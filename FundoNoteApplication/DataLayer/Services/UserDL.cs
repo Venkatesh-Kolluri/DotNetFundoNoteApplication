@@ -155,17 +155,26 @@ namespace DataLayer.Services
         {
             try
             {
-                
-                UserEntity userEntity = new UserEntity();
-              
-                userEntity = context.UserTable.FirstOrDefault(x => x.Email == email);
-                if (userEntity != null)
+                if (newPassword.Equals(confirmPassword))
                 {
-                    userEntity.Password = newPassword;
-                    context.SaveChanges();
-                    return "Done";
+                    UserEntity userEntity = new UserEntity();
+                    userEntity = context.UserTable.FirstOrDefault(x => x.Email == email);
+
+                    if (userEntity != null)
+                    {
+                        userEntity.Password = newPassword;
+                        context.SaveChanges();
+                        return "Done";
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                return null;
+                else
+                {
+                    return "Please enter confirmPassword Correctly";
+                }
             }
             catch (Exception)
             {

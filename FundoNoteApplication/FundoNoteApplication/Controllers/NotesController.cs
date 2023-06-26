@@ -359,26 +359,36 @@ namespace FundoNoteApplication.Controllers
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllNotesUsingRedisCache()
         {
-            var cacheKey = "NotesList";
-            string serializedNotesList;
-            var notesList = new List<NotesEntity>();
-            var redisNotesList = await distributedCache.GetAsync(cacheKey);
-            if (redisNotesList != null)
+            try
             {
-                serializedNotesList = Encoding.UTF8.GetString(redisNotesList);
-                notesList = JsonConvert.DeserializeObject<List<NotesEntity>>(serializedNotesList);
+                logger.LogInformation("Using Rdis Cache getting all available notes ");
+                var cacheKey = "NotesList";
+                string serializedNotesList;
+                var notesList = new List<NotesEntity>();
+                var redisNotesList = await distributedCache.GetAsync(cacheKey);
+                if (redisNotesList != null)
+                {
+                    serializedNotesList = Encoding.UTF8.GetString(redisNotesList);
+                    notesList = JsonConvert.DeserializeObject<List<NotesEntity>>(serializedNotesList);
+                }
+                else
+                {
+                    notesList = await context.NotesTable.ToListAsync();
+                    serializedNotesList = JsonConvert.SerializeObject(notesList);
+                    redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(cacheKey, redisNotesList, options);
+                }
+                return Ok(notesList);
+
             }
-            else
+            catch (Exception ex)
             {
-                notesList = await context.NotesTable.ToListAsync();
-                serializedNotesList = JsonConvert.SerializeObject(notesList);
-                redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
-                var options = new DistributedCacheEntryOptions()
-                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-                await distributedCache.SetAsync(cacheKey, redisNotesList, options);
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
-            return Ok(notesList);
 
         }
     }

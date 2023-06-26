@@ -127,12 +127,12 @@ namespace FundoNoteApplication.Controllers
         [Authorize]
         [HttpPut]
         [Route("resetpassword")]
-        public IActionResult ResetPassword(PasswordReset passwordReset)
+        public IActionResult ResetPassword(string newPassword, string conformPassword)
        {
             try
             {
                 string email = User.Claims.FirstOrDefault(x => x.Type == "email").Value;
-                var result = userBL.ResetPassword(passwordReset.newPassword,passwordReset.confirmPassword, email);
+                var result = userBL.ResetPassword(newPassword,conformPassword, email);
                 if (result != null)
                 {
                     logger.LogInformation("Password Reset successfull");
@@ -215,28 +215,38 @@ namespace FundoNoteApplication.Controllers
             }
         }
         [HttpGet("redis")]
-        public async Task<IActionResult> GetAllNotesUsingRedisCache()
+        public async Task<IActionResult> GetAllUserUsingRedisCache()
         {
-            var cacheKey = "UsersList";
-            string serializedUsersList;
-            var usersList = new List<UserEntity>();
-            var redisUsersList = await distributedCache.GetAsync(cacheKey);
-            if (redisUsersList != null)
+            try
             {
-                serializedUsersList = Encoding.UTF8.GetString(redisUsersList);
-                usersList = JsonConvert.DeserializeObject<List<UserEntity>>(serializedUsersList);
+                logger.LogInformation("getting all users using rediscache");
+                var cacheKey = "UsersList";
+                string serializedUsersList;
+                var usersList = new List<UserEntity>();
+                var redisUsersList = await distributedCache.GetAsync(cacheKey);
+                if (redisUsersList != null)
+                {
+                    serializedUsersList = Encoding.UTF8.GetString(redisUsersList);
+                    usersList = JsonConvert.DeserializeObject<List<UserEntity>>(serializedUsersList);
+                }
+                else
+                {
+                    usersList = await context.UserTable.ToListAsync();
+                    serializedUsersList = JsonConvert.SerializeObject(usersList);
+                    redisUsersList = Encoding.UTF8.GetBytes(serializedUsersList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(cacheKey, redisUsersList, options);
+                }
+                return Ok(usersList);
+
             }
-            else
+            catch (Exception ex)
             {
-                usersList = await context.UserTable.ToListAsync();
-                serializedUsersList = JsonConvert.SerializeObject(usersList);
-                redisUsersList = Encoding.UTF8.GetBytes(serializedUsersList);
-                var options = new DistributedCacheEntryOptions()
-                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-                await distributedCache.SetAsync(cacheKey, redisUsersList, options);
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
-            return Ok(usersList);
 
         }
     }
