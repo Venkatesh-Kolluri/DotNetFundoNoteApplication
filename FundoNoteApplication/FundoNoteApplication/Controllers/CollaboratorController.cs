@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -24,18 +25,20 @@ namespace FundoNoteApplication.Controllers
         private readonly FundoContext context;
         private readonly IDistributedCache distributedCache;
         private readonly IMemoryCache memoryCache;
+        private readonly ILogger<CollaboratorController> logger;
 
-        public CollaboratorController(ICollaboratorBL collaboratorBL, FundoContext context,IMemoryCache memoryCache,IDistributedCache distributedCache)
+        public CollaboratorController(ICollaboratorBL collaboratorBL, FundoContext context,IMemoryCache memoryCache,IDistributedCache distributedCache, ILogger<CollaboratorController> logger)
         {
             this.collaboratorBL = collaboratorBL;
             this.context = context;
             this.distributedCache = distributedCache;
             this.memoryCache = memoryCache;
+            this.logger = logger;
         }
 
-        [AllowAnonymous]
+
         [HttpPost]
-        [Route(nameof(AddCollab))]
+        [Route("AddCollab")]
         public IActionResult AddCollab(Collaborator collaborator)
         {     
             try
@@ -44,25 +47,26 @@ namespace FundoNoteApplication.Controllers
                 var result = collaboratorBL.AddCollab(collaborator);
                 if (result != null)
                 {
+                    logger.LogInformation("Collaborator Added sucessfully");
                     return this.Ok(new { success = true, msg = "Collaborator Added sucessfully", data = result });
                 }
                 else
                 {
-                    return this.BadRequest(new { success = false, msg = "Unsuccessfull  Collaborator" });
+                    logger.LogInformation("Unable to add Collaborator");
+                    return this.BadRequest(new { success = false, msg = "Unable to add Collaborator" });
                 }
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
         }
 
-        [AllowAnonymous]
         [HttpDelete]
-        [Route(nameof(DeleteCollab))]
+        [Route("DeleteCollab")]
         public IActionResult DeleteCollab(long collabId)
         {
             try
@@ -70,22 +74,24 @@ namespace FundoNoteApplication.Controllers
                 var delete = collaboratorBL.DeleteCollab(collabId);
                 if (delete != null)
                 {
+                    logger.LogInformation("Collaborator Deleted Successfully");
                     return this.Ok(new { Success = true, message = "Collaborator Deleted Successfully" });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to Delete Collaborator");
                     return this.BadRequest(new { Success = false, message = "Unable to Delete Collaborator" });
                 }
             }
             catch (Exception ex)
             {
-
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [AllowAnonymous]
+
         [HttpGet]
-        [Route(nameof(GetAllCollaborator))]
+        [Route("GetAllCollaborator")]
         public IActionResult GetAllCollaborator()
         {
             try
@@ -93,13 +99,18 @@ namespace FundoNoteApplication.Controllers
                 List<CollaboratorEntity> result = collaboratorBL.GetAllCollaborator();
                 if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = " collaborator got Successfully", data = result });
+                    logger.LogInformation("got collaborator Successfully");
+                    return this.Ok(new { Success = true, message = "got collaborator Successfully", data = result });
                 }
                 else
+                {
+                    logger.LogInformation("Collaborator not Available");
+                }
                     return this.BadRequest(new { Success = false, message = "Collaborator not Available" });
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }

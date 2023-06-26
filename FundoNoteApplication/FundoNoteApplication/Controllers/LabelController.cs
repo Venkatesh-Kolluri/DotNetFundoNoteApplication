@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -20,17 +21,20 @@ namespace FundoNoteApplication.Controllers
     [ApiController]
     public class LabelController : ControllerBase
     {
+      
         private readonly ILabelBL labelBL;
         private readonly FundoContext context;
         private readonly IDistributedCache distributedCache;
         private readonly IMemoryCache memoryCache;
+        private readonly ILogger<LabelController> logger;
 
-        public LabelController(ILabelBL labelBL,FundoContext context, IMemoryCache  memoryCache,IDistributedCache distributedCache)
+        public LabelController(ILabelBL labelBL,FundoContext context, IMemoryCache  memoryCache,IDistributedCache distributedCache, ILogger<LabelController> logger)
         {
             this.labelBL = labelBL;
             this.context = context;
             this.distributedCache = distributedCache;
             this.memoryCache = memoryCache;
+            this.logger = logger;
         }
   
         [HttpPost]
@@ -42,17 +46,19 @@ namespace FundoNoteApplication.Controllers
                 var label = labelBL.AddLable(labelNotes);
                 if (label != null)
                 {
+                    logger.LogInformation("Label added Successfully");
                     return this.Ok(new { success = true, message="Label added Successfully", Data=label }); 
                 }
                 else
                 {
+                    logger.LogInformation("Label not added");
                     return this.BadRequest(new { success = false, message = "Label not added" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
         }
@@ -66,19 +72,21 @@ namespace FundoNoteApplication.Controllers
                 var result = labelBL.DeleteLabel(labelId);
                 if(result != null)
                 {
+                    logger.LogInformation("label deleted");
                     return this.Ok(new { success = true, message = "label deleted", data = result });
 
                 }
                 else
                 {
+                    logger.LogInformation("unable to delete label");
                     return this.Ok(new { success = false, message = "unable to delete label" });
                 }
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
         [HttpGet]
@@ -90,18 +98,20 @@ namespace FundoNoteApplication.Controllers
                 var result = labelBL.GetAllLabel();
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "All available labels for the note  ", data = result });
+                    logger.LogInformation("All available labels for the note");
+                    return this.Ok(new { success = true, message = "All available labels for the note", data = result });
 
                 }
                 else
                 {
+                    logger.LogInformation("Labels are not availabel");
                     return this.Ok(new { success = false, message = "Labels are not availabel" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
         [HttpGet]
@@ -113,18 +123,20 @@ namespace FundoNoteApplication.Controllers
                 var result = labelBL.GetByLabelId(labelId);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "label Available", data = result });
+                    logger.LogInformation("labelId Available");
+                    return this.Ok(new { success = true, message = "labelId Available", data = result });
 
                 }
                 else
                 {
-                    return this.Ok(new { success = false, message = "label unavailable" });
+                    logger.LogInformation("labelId unavailable");
+                    return this.Ok(new { success = false, message = "labelId unavailable" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
         [HttpPut]
@@ -136,18 +148,20 @@ namespace FundoNoteApplication.Controllers
                 var result = labelBL.UpdateLabel(labelNotes,noteId);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, message = "label Available", data = result });
+                    logger.LogInformation("label updated");
+                    return this.Ok(new { success = true, message = "label updated", data = result });
 
                 }
                 else
                 {
-                    return this.Ok(new { success = false, message = "label unavailable" });
+                    logger.LogInformation("unavailable to update label");
+                    return this.Ok(new { success = false, message = "unavailable to update label" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

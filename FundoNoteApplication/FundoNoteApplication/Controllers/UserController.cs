@@ -49,17 +49,19 @@ namespace FundoNoteApplication.Controllers
                 var result = userBL.Register(userRegistration);
                 if (result != null)
                 {
+                    logger.LogInformation("registration successfull");
                     return this.Ok(new { success = true, msg = "registration sucessfull", data = result }); //SSMD form
                 }
                 else
                 {
+                    logger.LogInformation("registration Unsuccessfull");
                     return this.BadRequest(new { success = false, msg = "registration Unsucessfull" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
   
@@ -72,15 +74,19 @@ namespace FundoNoteApplication.Controllers
                 var result = userBL.Login(userlogin);
                 if (result == null)
                 {
+                    logger.LogInformation("User login successfully");
                     return Unauthorized();
                 }
-                return Ok(new { success = true, msg = "Login sucessfull", data = result });
+                else
+                {
+                    logger.LogInformation("User unable to login");
+                    return Ok(new { success = true, msg = "Login sucessfull", data = result });
+                }   
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
-
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
       
@@ -93,23 +99,26 @@ namespace FundoNoteApplication.Controllers
                  var check = userBL.EmailCheck(userEmail);
                  if (check != true)
                  {
-                     return this.BadRequest(new { sucess = false, msg = "Email is not exist.Please change your email" });
+                    logger.LogInformation("Email is not exist.Please change your email");
+                    return this.BadRequest(new { sucess = false, msg = "Email is not exist.Please change your email" });
                  }
                  var resultForgetPassword = userBL.ForgetPassword(userEmail);
                  if (resultForgetPassword != null)
                  {
-                     return this.Ok(new { sucess = true, msg = "Genrate Password Sucessfull", data = resultForgetPassword }); 
+                    logger.LogInformation("Genrate Password Sucessfull");
+                    return this.Ok(new { sucess = true, msg = "Genrate Password Sucessfull", data = resultForgetPassword }); 
                  }
                  else
                  {
-                     return this.BadRequest(new { sucess = false, msg = "Genrate Password Unsucessfull" });
+                    logger.LogInformation("Genrate Password UnSucessfull");
+                    return this.BadRequest(new { sucess = false, msg = "Genrate Password Unsucessfull" });
                  }
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }        
         
         }
@@ -126,18 +135,20 @@ namespace FundoNoteApplication.Controllers
                 var result = userBL.ResetPassword(passwordReset.newPassword,passwordReset.confirmPassword, email);
                 if (result != null)
                 {
+                    logger.LogInformation("Password Reset successfull");
                     return this.Ok(new { sucess = true, msg = "Password Reset Successfull", data = result });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to reset password");
                     return this.BadRequest(new { sucess = false, msg = "Unable to Reset Password" });
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
         
@@ -147,29 +158,33 @@ namespace FundoNoteApplication.Controllers
         {
             try
             {
-                //  var userId = notesModel.UserId;
-              /*  var check = userBL.CheckUserId(userId);
-                if (check != true)
-                {
-                    return this.BadRequest(new { sucess = false, msg = "User details" });
-                }*/
+              
                 List<UserEntity> result = userBL.GetbyUserId(userId);
                 if (result == null)
                 {
+                    logger.LogInformation(" user not Available");
                     return this.Ok(new { Success = false, message = " user not Available" });
                 }
                 else
                 {
                     if (result != null)
                     {
-                        return this.Ok(new { Success = true, message = " Got note Successfully", data = result });
+                        logger.LogInformation(" User found Successfully");
+                        return this.Ok(new { Success = true, message = "User found", data = result });
                     }
-                    return this.BadRequest(new { Success = false, message = " error occured" });
+                    else
+                    {
+                        logger.LogInformation("error eccord in UserId");
+                        return this.BadRequest(new { Success = false, message = " error occured" });
+
+                    }
+                   
 
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
@@ -195,6 +210,7 @@ namespace FundoNoteApplication.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }

@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -29,18 +30,20 @@ namespace FundoNoteApplication.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
-         INotesBL notesBL;
+        INotesBL notesBL;
+        private readonly ILogger<NotesController> logger;
         private readonly FundoContext context;
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
-      
 
-        public NotesController(INotesBL notesBL,FundoContext context,IMemoryCache  memoryCache, IDistributedCache distributedCache)
+
+        public NotesController(INotesBL notesBL, FundoContext context, IMemoryCache memoryCache, IDistributedCache distributedCache, ILogger<NotesController> logger)
         {
             this.notesBL = notesBL;
             this.context = context;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -54,23 +57,26 @@ namespace FundoNoteApplication.Controllers
                 var check = notesBL.CheckUserId(userId);
                 if (check != true)
                 {
-                    return this.BadRequest(new { sucess = false, msg = "Not Created" });
+                    logger.LogInformation("User not available");
+                    return this.BadRequest(new { sucess = false, msg = "User not available" });
                 }
                 var result = notesBL.AddNote(notesModel);
                 if (result != null)
                 {
-                    return this.Ok(new { success = true, msg = "Notes Added sucessfully", data = result }); 
+                    logger.LogInformation("Notes Added sucessfully");
+                    return this.Ok(new { success = true, msg = "Notes Added sucessfully", data = result });
                 }
                 else
                 {
+                    logger.LogInformation("Unsuccessfull in adding notes");
                     return this.BadRequest(new { success = false, msg = "Unsuccessfull in adding notes" });
                 }
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                 throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
         }
@@ -84,21 +90,23 @@ namespace FundoNoteApplication.Controllers
 
                 var delete = notesBL.DeleteNote(NoteId);
                 if (delete != null)
-                { 
+                {
+                    logger.LogInformation("Notes Deleted Successfully");
                     return this.Ok(new { Success = true, message = "Notes Deleted Successfully" });
                 }
                 else
                 {
+                    logger.LogInformation("Unable to Delete notes");
                     return this.BadRequest(new { Success = false, message = "Unable to Delete notes" });
                 }
             }
             catch (Exception ex)
             {
-             
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-  
+
 
         [HttpPut]
         [Route("updatenote")]
@@ -110,22 +118,24 @@ namespace FundoNoteApplication.Controllers
                 var check = notesBL.CheckUserId(userId);
                 if (check != true)
                 {
-                    return this.BadRequest(new { sucess = false, msg = "Not Created" });
+                    logger.LogInformation("UserId not available");
+                    return this.BadRequest(new { sucess = false, msg = "UserId not available" });
                 }
                 var result = notesBL.UpdateNote(notesModel, NoteId);
                 if (result != null)
                 {
+                    logger.LogInformation("Notes Updated Successfully");
                     return this.Ok(new { Success = true, message = "Notes Updated Successfully", data = result });
                 }
                 else
                 {
-                   
+                    logger.LogInformation("No Notes Found");
                     return this.BadRequest(new { Success = false, message = "No Notes Found" });
                 }
             }
             catch (Exception ex)
             {
-          
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
@@ -139,19 +149,25 @@ namespace FundoNoteApplication.Controllers
                 var result = notesBL.Pinned(noteId);
                 if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = "successfull", data = result });
+                    logger.LogInformation("pin successfull");
+                    return this.Ok(new { Success = true, message = "pin successfull", data = result });
                 }
                 else
+                {
+                    logger.LogInformation("Unable to Pin");
+                    return this.BadRequest(new { Success = false, message = "Unable to Pin" });
+                }
 
-                return this.BadRequest(new { Success = false, message = "Unable to execute Pin" });
+
             }
 
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-       
+
         [HttpPut]
         [Route("archived")]
         public IActionResult Archived(long noteId)
@@ -161,13 +177,19 @@ namespace FundoNoteApplication.Controllers
                 var result = notesBL.Archieved(noteId);
                 if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = "excuted successfully", data = result });
+                    logger.LogInformation("archived successfull");
+                    return this.Ok(new { Success = true, message = "archived successfull", data = result });
                 }
                 else
-                    return this.BadRequest(new { Success = false, message = "Unable to execute Archived" });
+                {
+                    logger.LogInformation("Unable to Archive");
+                    return this.BadRequest(new { Success = false, message = "Unable to Archive" });
+                }
+
             }
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
@@ -181,123 +203,132 @@ namespace FundoNoteApplication.Controllers
                 var result = notesBL.Trashed(noteId);
                 if (result != null)
                 {
+                    logger.LogInformation("moved to trash successfully");
                     return this.Ok(new { Success = true, message = "moved to trash successfully", data = result });
                 }
                 else
+                {
+                    logger.LogInformation("Unable to execute Trash");
                     return this.BadRequest(new { Success = false, message = "Unable to execute Trash" });
-            
+                }
+
+
             }
 
             catch (Exception ex)
             {
+                logger.LogError(ex.Message);
                 return BadRequest(new { success = false, message = ex.Message });
-            
             }
         }
-    
-    [HttpGet]
-    [Route("getnote")]
-            public IActionResult GetNote(long NoteId)
+
+        [HttpGet]
+        [Route("getnote")]
+        public IActionResult GetNote(long NoteId)
+        {
+            try
             {
-                try
+                List<NotesEntity> result = notesBL.GetNote(NoteId);
+                if (result != null)
                 {
-                    List<NotesEntity> result = notesBL.GetNote(NoteId);
-                    if (result != null)
-                    {
-                        return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
-                    }
-                    else
-                        return this.BadRequest(new { Success = false, message = "Note not Available" });
+                    logger.LogInformation("got note Successfully");
+                    return this.Ok(new { Success = true, message = "got note Successfully", data = result });
                 }
-                catch (Exception ex)
+                else
                 {
-                    return BadRequest(new { success = false, message = ex.Message });
+                    logger.LogInformation("Unsuccessfull in adding notes");
+                    return this.BadRequest(new { Success = false, message = "Note not Available" });
                 }
             }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
 
         [HttpGet]
         [Route("getnotebyuserid")]
-          public IActionResult GetNoteByUserID(long userId)
-          {
-              try
-              {
+        public IActionResult GetNoteByUserID(long userId)
+        {
+            try
+            {
                 //  var userId = notesModel.UserId;
-                  var check = notesBL.CheckUserId(userId);
-                  if (check != true)
-                  {
-                      return this.BadRequest(new { sucess = false, msg = "Not Created" });
-                  }
-                  List<NotesEntity> result = notesBL.GetNotebyUserId(userId);
-                  if (result == null)
-                  {
-                      return this.Ok(new { Success = false, message = " Note not Available" });
-                  }
-                  else
-                  {
-                      if (result != null)
-                      {
-                          return this.Ok(new { Success = true, message = " Got note Successfully", data = result });
-                      }
-                      return this.BadRequest(new { Success = false, message = " error occured" });
+                var check = notesBL.CheckUserId(userId);
+                if (check != true)
+                {
+                    logger.LogInformation("UserId not Created");
+                    return this.BadRequest(new { sucess = false, msg = "UserId not Created" });
+                }
+                List<NotesEntity> result = notesBL.GetNotebyUserId(userId);
+                if (result != null)
+                {
+                    logger.LogInformation("Note Available");
+                    return this.Ok(new { Success = false, message = "Note Available" });
+                }
+                else
+                {                   
+                     logger.LogInformation("Note not Available");
+                    return this.BadRequest(new { Success = false, message = " Not not available " });
 
-                  }
-              }
-              catch (Exception ex)
-              {
-                  return BadRequest(new { success = false, message = ex.Message });
-              }
-          }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
 
         [HttpGet]
         [Route("getallnote")]
-          public IActionResult GetAllNote()
-          {
-              try
-              {
-                  List<NotesEntity> result = notesBL.GetAllNote();
-                  if (result != null)
-                  {
-                      return this.Ok(new { Success = true, message = " Note got Successfully", data = result });
-                  }
-                  else
-                      return this.BadRequest(new { Success = false, message = "Note not Available" });
-              }
-              catch (Exception ex)
-              {
-                  return BadRequest(new { success = false, message = ex.Message });
-              }
-          }
-    
+        public IActionResult GetAllNote()
+        {
+            try
+            {
+                List<NotesEntity> result = notesBL.GetAllNote();
+                if (result != null)
+                {
+                    logger.LogInformation("got notes Successfully");
+                    return this.Ok(new { Success = true, message = "got notes Successfully", data = result });
+                }
+                else
+                {
+                    logger.LogInformation("Notes not Available");
+                    return this.BadRequest(new { Success = false, message = "Notes not Available" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpPut]
         [Route("Image")]
         public IActionResult Image(long noteId, IFormFile image)
         {
             try
             {
-                //long userID = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
 
-              /*  var userId = userId;
-                var check = notesBL.CheckUserId(userId);
-                if (check != true)
-                {
-                    return this.BadRequest(new { sucess = false, msg = "Not Created" });
-                }*/
                 var result = notesBL.Image(noteId, image);
                 if (result != null)
                 {
-                  
+                    logger.LogInformation("Image Uploaded Successfully");
                     return Ok(new { Status = true, Message = "Image Uploaded Successfully", Data = result });
                 }
                 else
                 {
-                    
+                    logger.LogInformation("Image Uploaded Unsuccessfully");
                     return BadRequest(new { Status = true, Message = "Image Uploaded Unsuccessfully", Data = result });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-               
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -310,19 +341,19 @@ namespace FundoNoteApplication.Controllers
                 IQueryable<NotesEntity> result = notesBL.Find(note);
                 if (result != null)
                 {
-
+                    logger.LogInformation("note found Successfully");
                     return Ok(new { Status = true, Message = "note found Successfully", Data = result });
                 }
                 else
                 {
-
+                    logger.LogInformation("notes are unavailable ");
                     return BadRequest(new { Status = true, Message = "notes are unavailable ", Data = result });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                logger.LogError(ex.Message);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
         [HttpGet("redis")]
@@ -348,7 +379,7 @@ namespace FundoNoteApplication.Controllers
                 await distributedCache.SetAsync(cacheKey, redisNotesList, options);
             }
             return Ok(notesList);
-     
+
         }
     }
 }
