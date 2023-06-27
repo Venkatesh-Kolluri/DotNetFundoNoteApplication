@@ -23,7 +23,7 @@ namespace DataLayer.Services
         /// AddLabel method help to add labels to the note 
         /// </summary>
         /// <param name="labelNotes"></param>
-        /// <returns></returns>
+        /// <returns>added label</returns>
         public LabelEntity AddLable(LabelNotes labelNotes)
         {
             try
@@ -55,7 +55,7 @@ namespace DataLayer.Services
         /// DeleteLabel method is used to delete labels from the notes with hep of labelId
         /// </summary>
         /// <param name="labelId"></param>
-        /// <returns></returns>
+        /// <returns>deleted label</returns>
         public LabelEntity DeleteLabel(long labelId)
         {
 
@@ -83,7 +83,7 @@ namespace DataLayer.Services
         /// <summary>
         /// GetAllLabel method will return all the labels present in the note
         /// </summary>
-        /// <returns></returns>
+        /// <returns>all available labels</returns>
         public List<LabelEntity> GetAllLabel()
         {
             var getLabels = context.LabelTable.FirstOrDefault();
@@ -100,7 +100,7 @@ namespace DataLayer.Services
         /// This method is used to gives you a particular label from all the labels with the help of labelId
         /// </summary>
         /// <param name="labelId"></param>
-        /// <returns></returns>
+        /// <returns>particular label</returns>
         public List<LabelEntity> GetByLabelId(long labelId)
         {
             try
@@ -126,7 +126,7 @@ namespace DataLayer.Services
         /// </summary>
         /// <param name="labelNotes"></param>
         /// <param name="noteId"></param>
-        /// <returns></returns>
+        /// <returns>updated label</returns>
         public LabelEntity UpdateLabel(LabelNotes labelNotes,int noteId)
         {
             try

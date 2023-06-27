@@ -28,7 +28,7 @@ namespace DataLayer.Services
         /// Register method used to register users in the application
         /// </summary>
         /// <param name="user"></param>
-        /// <returns></returns>
+        /// <returns>user will ge registered</returns>
         public UserEntity Register(UserRegistration user)
         {
             try
@@ -57,7 +57,7 @@ namespace DataLayer.Services
         /// Login method is used to get access to a particular user into the application
         /// </summary>
         /// <param name="userLogin"></param>
-        /// <returns></returns>
+        /// <returns>login access</returns>
         public string Login(UserLogin userLogin)
         {
             UserEntity userEntity = new UserEntity();
@@ -75,7 +75,7 @@ namespace DataLayer.Services
         /// </summary>
         /// <param name="email"></param>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>generate token</returns>
         public string GenerateSecurityToken(string email,long userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -84,7 +84,8 @@ namespace DataLayer.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, email)
+                    new Claim(ClaimTypes.Email, email),
+                     new Claim("userId", userId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(expDate)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -98,7 +99,7 @@ namespace DataLayer.Services
         /// ForgetPass method is used to generate a token and mail the token to a particular user to reset the users password
         /// </summary>
         /// <param name="Email"></param>
-        /// <returns></returns>
+        /// <returns>send token to mail</returns>
         public string ForgetPass(string Email)
         {
             try
@@ -125,7 +126,7 @@ namespace DataLayer.Services
         /// EmailCheck method is used to check weather the entered email is available in the database or not
         /// </summary>
         /// <param name="email"></param>
-        /// <returns></returns>
+        /// <returns>true or false</returns>
         public bool EmailCheck(string email)
         {
             try
@@ -150,7 +151,7 @@ namespace DataLayer.Services
        /// <param name="newPassword"></param>
        /// <param name="confirmPassword"></param>
        /// <param name="email"></param>
-       /// <returns></returns>
+       /// <returns>updated password</returns>
         public string ResetPassword(string newPassword,string confirmPassword, string email)
         {
             try
@@ -159,17 +160,10 @@ namespace DataLayer.Services
                 {
                     UserEntity userEntity = new UserEntity();
                     userEntity = context.UserTable.FirstOrDefault(x => x.Email == email);
-
-                    if (userEntity != null)
-                    {
-                        userEntity.Password = newPassword;
-                        context.SaveChanges();
-                        return "Done";
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    userEntity.Password = newPassword;
+                    context.SaveChanges();
+                    return "Password changed successfully";
+                    
                 }
                 else
                 {
@@ -185,7 +179,7 @@ namespace DataLayer.Services
         /// <summary>
         /// GetAllUser method will retrive all the users present in the database
         /// </summary>
-        /// <returns></returns>
+        /// <returns>all user details</returns>
         public List<UserEntity> GetAllUser()
         {
             try
@@ -211,7 +205,7 @@ namespace DataLayer.Services
         /// GetbyUserId method is used to get the all the details of the user with particular userId
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>particular user details</returns>
         public List<UserEntity> GetbyUserId(long userId)
         {
             try

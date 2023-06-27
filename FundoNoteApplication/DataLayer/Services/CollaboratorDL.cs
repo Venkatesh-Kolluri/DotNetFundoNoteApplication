@@ -21,7 +21,7 @@ namespace DataLayer.Services
         /// AddCollab method is used to add an email to notes which an be shared and used by the collaborator
         /// </summary>
         /// <param name="collaborator"></param>
-        /// <returns></returns>
+        /// <returns>added collaborator</returns>
         public CollaboratorEntity AddCollab(Collaborator collaborator)
         {
             try
@@ -51,7 +51,7 @@ namespace DataLayer.Services
         /// <summary>
         /// GetAllCollaborator method will give all the available collabrator with certain note
         /// </summary>
-        /// <returns></returns>
+        /// <returns>all available collaborator</returns>
         public List<CollaboratorEntity> GetAllCollaborator()
         {
             try
@@ -76,7 +76,7 @@ namespace DataLayer.Services
         /// DeleteCollab method is used to delete a collaborator with the help of collabId
         /// </summary>
         /// <param name="collabId"></param>
-        /// <returns></returns>
+        /// <returns>deleted collaborator</returns>
         public CollaboratorEntity DeleteCollab(long collabId)
         {
             try

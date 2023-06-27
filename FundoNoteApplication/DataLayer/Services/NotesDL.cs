@@ -28,7 +28,7 @@ namespace DataLayer.Services
         /// CheckUsedId method is used to check weather the UsedId exist in the database or not
         /// </summary>
         /// <param name="userID"></param>
-        /// <returns></returns>
+        /// <returns>true or false </returns>
         public bool CheckUserId(long userID)
         {
             try
@@ -51,7 +51,7 @@ namespace DataLayer.Services
         /// AddNote method is used to add notes in the application,we can add as many notes as we want
         /// </summary>
         /// <param name="notes"></param>
-        /// <returns></returns>
+        /// <returns>add note to particular user</returns>
         public NotesEntity AddNote(NotesModel notes)
         {
             try
@@ -88,7 +88,7 @@ namespace DataLayer.Services
         /// DeleteNote method is used to delete notes from the application with the help of noteId
         /// </summary>
         /// <param name="NoteId"></param>
-        /// <returns></returns>
+        /// <returns>delete the note</returns>
         public NotesEntity DeleteNote(long NoteId)
         {
             var deleteNote = context.NotesTable.Where(a => a.NoteID == NoteId).FirstOrDefault();
@@ -108,7 +108,7 @@ namespace DataLayer.Services
         /// </summary>
         /// <param name="notesModel"></param>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>updated note</returns>
         public NotesEntity UpdateNote(NotesModel notesModel, long userId)
         {
             try
@@ -146,7 +146,7 @@ namespace DataLayer.Services
         /// Pinned method is used to pin/unpin a certain note whenever the method is called 
         /// </summary>
         /// <param name="noteId"></param>
-        /// <returns></returns>
+        /// <returns>true or false </returns>
         public bool Pinned(long noteId)
         {
             NotesEntity notesEntity = new NotesEntity();
@@ -160,7 +160,7 @@ namespace DataLayer.Services
         /// Trashed method is used to send the note to trash 
         /// </summary>
         /// <param name="noteId"></param>
-        /// <returns></returns>
+        /// <returns>true or false</returns>
         public bool Trashed(long noteId)
         {
             var result = context.NotesTable.Where(x => x.NoteID == noteId).FirstOrDefault();
@@ -172,7 +172,7 @@ namespace DataLayer.Services
         /// Whenever Archived method is called the note will be archived
         /// </summary>
         /// <param name="noteId"></param>
-        /// <returns></returns>
+        /// <returns>true or false</returns>
         public bool Archieved(long noteId)
         {
 
@@ -186,7 +186,7 @@ namespace DataLayer.Services
         /// </summary>
         /// <param name="noteId"></param>
         /// <param name="color"></param>
-        /// <returns></returns>
+        /// <returns>add colours to the note</returns>
         public NotesEntity ColorNote(long noteId, string color)
         {
             try
@@ -215,7 +215,7 @@ namespace DataLayer.Services
         /// GetNote method is used to retrive a particular note from the database with the help of noteId
         /// </summary>
         /// <param name="noteId"></param>
-        /// <returns></returns>
+        /// <returns>returns particular note</returns>
         public List<NotesEntity> GetNote(long noteId)
         {
             try
@@ -239,7 +239,7 @@ namespace DataLayer.Services
         /// <summary>
         /// GettAllNotes method is used to retrive all the notes available in the database
         /// </summary>
-        /// <returns></returns>
+        /// <returns>gives all notes</returns>
         public List<NotesEntity> GetAllNote()
         {
             try
@@ -265,7 +265,7 @@ namespace DataLayer.Services
         /// This method is used to retrive note from database by using userId
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>gives a particular note</returns>
         public List<NotesEntity> GetNotebyUserId(long userId)
         {
             try
@@ -292,7 +292,7 @@ namespace DataLayer.Services
         /// </summary>
         /// <param name="noteID"></param>
         /// <param name="image"></param>
-        /// <returns></returns>
+        /// <returns>upload image to cloudinary</returns>
         /// <exception cref="Exception"></exception>
         public string Image(long noteID, IFormFile image)
         {
@@ -335,12 +335,12 @@ namespace DataLayer.Services
         /// Find method is used to search the notes having particular lines and word in the notesDescription
         /// </summary>
         /// <param name="note"></param>
-        /// <returns></returns>
+        /// <returns>available note with given search value</returns>
         public IQueryable<NotesEntity> Find(string note)
         {
             try
             {
-              //  string query = note;
+              
 
                 IQueryable<NotesEntity> queryable = context.Set<NotesEntity>().AsQueryable();
                 var find = context.NotesTable.Where(x=>x.Note==note);
@@ -348,7 +348,7 @@ namespace DataLayer.Services
                 {
                     queryable = queryable.Where(x => x.Note.Contains(note));
                     return queryable;
-                   // return context.NotesTable.Where(u => u.Note == note).ToList();
+                  
                 }
                 else
                 {
